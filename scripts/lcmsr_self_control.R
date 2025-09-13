@@ -49,18 +49,27 @@ model_mi <- as.character(ME, single = TRUE)  # model string containing the measu
 
 # --- Second-order latent growth on the first-order factors
 # Use irregular spacing and center at age 11 for interpretability
-time_points <- ages
-time_center <- time_points - 11  # c(-8, -6, -4, 0, 3, 6)
+time_center <- ages - 11
+fac_names   <- paste0("SC_t", ages)
 
-# Build all pairwise zero residual covariances among SC_t*
-zero_lat_covs <- combn(fac_names, 2, FUN = function(x) sprintf("%s ~~ 0*%s", x[1], x[2]))
-# Fix the means of the time-specific factors to 0
-fac_means_zero <- paste(paste0(fac_names, " ~ 0*1"), collapse = "\n")
+# Autoregressive structured residuals (adjacent waves)
+#    Option A: free but equal within same gap length (2y, 3y) + unique 4y
+sr_ar <- '
+SC_t5  ~ phi2*SC_t3     # 2-year gap
+SC_t7  ~ phi2*SC_t5     # 2-year gap
+SC_t11 ~ phi4*SC_t7     # 4-year gap
+SC_t14 ~ phi3*SC_t11    # 3-year gap
+SC_t17 ~ phi3*SC_t14    # 3-year gap
+'
 
-growth_syntax <- paste0('
-# Second-order (factor-of-curves) growth on latent self-control
-i =~ ', paste(paste0("1*", fac_names), collapse = " + "), '
+# Distribution of growth factors
+sr_growth <- paste0('
+# Latent growth factors measured by the time-specific latent factors
+i =~ ', paste(paste0("1*",  fac_names), collapse = " + "), '
 s =~ ', paste(paste0(time_center, "*", fac_names), collapse = " + "), '
+
+# Fix means of time-specific factors so i and s carry all means
+', paste(paste0(fac_names, " ~ 0*1"), collapse = "\n"), '
 
 # Growth-factor means and (co)variances
 i ~ 1
@@ -68,30 +77,37 @@ s ~ 1
 i ~~ i
 s ~~ s
 i ~~ s
-
-# Shut off residual covariances among time-specific factors
-', paste(zero_lat_covs, collapse = "\n"), '
 ')
 
-# --- Fit the full model
-fit_lgcm <- lavaan::sem(paste(model_mi, fac_means_zero, growth_syntax, sep = "\n"),
-                        data = merged_data,
-                        ordered = ordered_vars,
-                        estimator = "ULSMV",
-                        parameterization = "theta",
-                        std.lv = FALSE,             
-                        meanstructure = TRUE)
+# 3) Do NOT allow additional residual covariances among SC_t* (AR handles dependence)
+zero_lat_covs <- combn(fac_names, 2, FUN = function(x) sprintf("%s ~~ 0*%s", x[1], x[2]))
+zero_lat_covs <- paste(zero_lat_covs, collapse = "\n")
 
-summary(fit_lgcm, fit.measures = TRUE, standardized = TRUE)
+# --- Fit
+model_sr <- paste(model_mi, sr_growth, sr_ar, zero_lat_covs, sep = "\n")
+
+
+fit_sr <- lavaan::sem(
+  model_sr,
+  data             = merged_data,
+  ordered          = ordered_vars,
+  estimator        = "ULSMV",        # fast & robust for many ordinals
+  parameterization = "theta",
+  std.lv           = FALSE,
+  meanstructure    = TRUE
+)
+
+summary(fit_sr, fit.measures = TRUE, standardized = TRUE)
 
 # --- Report robust/scaled fit indices only
-round(fitMeasures(fit_lgcm,
+round(fitMeasures(fit_sr,
       c("chisq.scaled","df","cfi.scaled","tli.scaled","rmsea.scaled","srmr")), 3)
 
 # --- Implied mean trajectory of the latent self-control factor
-PE <- parameterEstimates(fit_lgcm)
+PE <- parameterEstimates(fit_sr)
 i_mean <- PE$est[PE$lhs == "i" & PE$op == "~1"]
 s_mean <- PE$est[PE$lhs == "s" & PE$op == "~1"]
 implied_SC_means <- i_mean + s_mean * time_center
 names(implied_SC_means) <- paste0("Age", ages)
 print(round(implied_SC_means, 3))
+
