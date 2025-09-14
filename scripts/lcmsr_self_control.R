@@ -111,3 +111,47 @@ implied_SC_means <- i_mean + s_mean * time_center
 names(implied_SC_means) <- paste0("Age", ages)
 print(round(implied_SC_means, 3))
 
+
+
+
+
+
+##### Model 2: LCM-SR with Latent Basis Growth #####
+sr_growth_lb <- '
+# Intercept (same as yours; time-specific means fixed below)
+i =~ 1*SC_t3 + 1*SC_t5 + 1*SC_t7 + 1*SC_t11 + 1*SC_t14 + 1*SC_t17
+
+# Latent-basis slope: first=0, last=1, middle waves free
+s =~ 0*SC_t3 + lb5*SC_t5 + lb7*SC_t7 + lb11*SC_t11 + lb14*SC_t14 + 1*SC_t17
+
+# Time-specific factor means fixed to 0 so growth factors carry the mean
+SC_t3  ~ 0*1
+SC_t5  ~ 0*1
+SC_t7  ~ 0*1
+SC_t11 ~ 0*1
+SC_t14 ~ 0*1
+SC_t17 ~ 0*1
+
+# Growth-factor means/variances/covariances
+i ~ 1
+s ~ 1
+i ~~ i
+s ~~ s
+i ~~ s
+'
+
+# Model with latent basis growth and autoregressive structured residuals
+model_sr_lb <- paste(model_mi, sr_growth_lb, zero_lat_covs, sep="\n")
+
+# Fit
+fit_sr_lb <- lavaan::sem(
+  model_sr_lb,
+  data             = merged_data,
+  ordered          = ordered_vars,
+  estimator        = "WLSMV",
+  parameterization = "theta",
+  std.lv           = FALSE,
+  meanstructure    = TRUE,
+)
+
+summary(fit_sr_lb, fit.measures = TRUE, standardized = TRUE)
