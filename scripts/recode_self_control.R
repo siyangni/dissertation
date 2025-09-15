@@ -172,345 +172,55 @@ if (exists("merged_data")) {
 }
 
 # =============================================================================
-# MASTER SCRIPT: Recode Self-Control Variables for All Ages
+# SIMPLIFIED MASTER SCRIPT: Recode Self-Control Variables for All Ages
 # =============================================================================
 #
-# This script consolidates the individual age-specific self-control recoding scripts
-# into a single, parameterized master script. It processes self-control variables
-# for ages 3, 5, 7, 11, 14, and 17 using a unified approach.
-#
-# Author: Dissertation Analysis Pipeline
-# Date: 2025
+# This script uses the correct variable naming conventions and the proven
+# recode_self_control() function to process all ages consistently.
 #
 # =============================================================================
 
-# Load required packages
-library(pacman)
+# Load required packages if not already loaded
+if (!require(pacman, quietly = TRUE)) {
+  install.packages("pacman")
+  library(pacman)
+}
 p_load(psych, corrplot, lavaan, semTools, VIM)
 
-# =============================================================================
-# 1. MASTER FUNCTION: Recode Self-Control Variables for Any Age
-# =============================================================================
+# Load the merged dataset if not already loaded
+if (!exists("merged_data")) {
+  data_path <- "/home/siyang/dissertation_folder/data"
+  merged_data <- readRDS(file.path(data_path, "merged1203.rds"))
+  cat("Loaded merged_data from:", file.path(data_path, "merged1203.rds"), "\n")
+}
 
-#' Recode Self-Control Variables for a Specific Age
-#'
-#' This function processes self-control variables for a given age by:
-#' 1. Defining the appropriate variable prefixes based on age
-#' 2. Checking variable availability in the dataset
-#' 3. Displaying frequency distributions of original variables
-#' 4. Recoding reverse-coded variables (1->0, 2->1, 3->2)
-#' 5. Recoding normal-coded variables (1->2, 2->1, 3->0)
-#' 6. Providing summary statistics and variable mappings
-#'
-#' @param age Integer. Age to process (3, 5, 7, 11, 14, or 17)
-#' @param data Data frame. The dataset containing the variables (must be named 'merged_data')
-#' @param verbose Logical. Whether to print detailed output (default: TRUE)
-#' @return Invisible NULL. The function modifies the data frame in place.
-#'
-#' @details
-#' The function uses standardized coding where higher values indicate higher self-control:
-#' - Originally reverse-coded variables: 1->0, 2->1, 3->2
-#' - Originally normal-coded variables: 1->2, 2->1, 3->0 (reverse-coded for consistency)
-#' - Invalid values (< 0, 4, or non-integer) are coded as NA
-recode_self_control_age <- function(age, data, verbose = TRUE) {
+cat("=== SIMPLIFIED MASTER SELF-CONTROL RECODING SCRIPT ===\n")
+cat("Using the proven recode_self_control() function with correct variable names...\n\n")
 
-  # Define age-to-prefix mapping
-  age_prefixes <- list(
-    "3" = "bmsd",
-    "5" = "cmsd",
-    "7" = "dmsd",
-    "11" = "epsd",
-    "14" = "fpsd",
-    "17" = "gpsd"
-  )
-
-  # Validate age parameter
-  if (!as.character(age) %in% names(age_prefixes)) {
-    stop("Invalid age. Supported ages are: ", paste(names(age_prefixes), collapse = ", "))
+# Apply the working function to all ages
+if (exists("merged_data")) {
+  for (age in c(3, 5, 7, 11, 14, 17)) {
+    merged_data <- recode_self_control(merged_data, age, verbose = TRUE)
   }
 
-  prefix <- age_prefixes[[as.character(age)]]
-  output_prefix <- paste0("sc", age, "_")
-
-  if (verbose) {
-    cat("
-=== SELF-CONTROL VARIABLES PROCESSING (AGE ", age, ") ===\n", sep = "")
-    cat("Using prefix: '", prefix, "' -> output prefix: '", output_prefix, "'\n\n", sep = "")
-  }
-
-  # =============================================================================
-  # 1. DEFINE SELF-CONTROL VARIABLE LISTS
-  # =============================================================================
-
-  # Variables that originally need reverse coding (higher original = lower self-control)
-  self_control_reverse <- c(
-    paste0(prefix, "sta0"),  # SDST: Think things out before acting
-    paste0(prefix, "gfa0"),  # Having at least one good friend
-    paste0(prefix, "lca0"),  # Generally liked by other children
-    paste0(prefix, "pfa0"),  # Being considerate of other people's feelings
-    paste0(prefix, "sra0"),  # Sharing readily with other children
-    paste0(prefix, "hua0"),  # Being helpful if someone is hurt
-    paste0(prefix, "kya0"),  # Being kind to younger children
-    paste0(prefix, "vha0"),  # Often volunteering to help others
-    paste0(prefix, "tea0"),  # Sees tasks through to the end, good attention span
-    paste0(prefix, "ora0")   # Generally obedient
-  )
-
-  # Variables that originally have normal coding (higher original = lower self-control)
-  self_control_normal <- c(
-    paste0(prefix, "spa0"),  # Being rather solitary and tending to play alone
-    paste0(prefix, "dca0"),  # Is easily distracted, concentration wanders
-    paste0(prefix, "gba0"),  # Getting on better with adults than other children
-    paste0(prefix, "tta0"),  # Often has temper tantrums or hot tempers
-    paste0(prefix, "mwa0"),  # Having many worries
-    paste0(prefix, "uda0"),  # Being often unhappy, down-hearted, or tearful
-    paste0(prefix, "nca0"),  # Being nervous or clingy in new situations
-    paste0(prefix, "fea0"),  # Having many fears, being easily scared
-    paste0(prefix, "pba0"),  # Child is restless, overactive, cannot stay still for long
-    paste0(prefix, "fsa0"),  # Child is constantly fidgeting or squirming
-    paste0(prefix, "oaa0")   # Lying or cheating
-  )
-
-  # Combine all variables
-  all_self_control_vars <- c(self_control_reverse, self_control_normal)
-
-  if (verbose) {
-    cat("Variables requiring reverse coding:", length(self_control_reverse), "\n")
-    cat("Variables with normal coding:", length(self_control_normal), "\n")
-    cat("Total variables to process:", length(all_self_control_vars), "\n\n")
-  }
-
-  # =============================================================================
-  # 2. CHECK VARIABLE AVAILABILITY
-  # =============================================================================
-
-  # Check which variables exist in the data
-  existing_vars <- all_self_control_vars[all_self_control_vars %in% names(data)]
-  missing_vars <- all_self_control_vars[!all_self_control_vars %in% names(data)]
-
-  if (verbose) {
-    cat("=== VARIABLE AVAILABILITY ===\n")
-    cat("Found variables (", length(existing_vars), "/", length(all_self_control_vars), "): ",
-        paste(existing_vars, collapse = ", "), "\n", sep = "")
-
-    if (length(missing_vars) > 0) {
-      cat("Missing variables (", length(missing_vars), "): ",
-          paste(missing_vars, collapse = ", "), "\n", sep = "")
-    }
-    cat("\n")
-  }
-
-  # =============================================================================
-  # 3. DISPLAY ORIGINAL VARIABLE DISTRIBUTIONS
-  # =============================================================================
-
-  if (verbose && length(existing_vars) > 0) {
-    cat("=== ORIGINAL VARIABLE DISTRIBUTIONS ===\n")
-    for (var in existing_vars) {
-      cat("\n--- ", var, " ---\n", sep = "")
-      var_numeric <- as.vector(data[[var]])
-      print(table(var_numeric, useNA = "ifany"))
-    }
-    cat("\n")
-  }
-
-  # =============================================================================
-  # 4. RECODE ORIGINALLY REVERSE-CODED VARIABLES (STANDARDIZE TO 0-2 SCALE)
-  # =============================================================================
-
-  if (verbose) {
-    cat("=== STANDARDIZING ORIGINALLY REVERSE-CODED VARIABLES ===\n")
-  }
-
-  # Define variable name mappings for reverse-coded variables
-  reverse_var_names <- c("think_act", "good_friend", "liked_children", "considerate",
-                        "sharing", "helpful", "kind_younger", "volunteer_help",
-                        "task_completion", "obedient")
-
-  reverse_original_suffixes <- c("sta0", "gfa0", "lca0", "pfa0", "sra0", "hua0",
-                                "kya0", "vha0", "tea0", "ora0")
-
-  # Recode each reverse-coded variable
-  for (i in seq_along(reverse_var_names)) {
-    original_var <- paste0(prefix, reverse_original_suffixes[i])
-    new_var <- paste0(output_prefix, reverse_var_names[i])
-
-    if (original_var %in% names(data)) {
-      var_numeric <- as.vector(data[[original_var]])
-      data[[new_var]] <- ifelse(!var_numeric %in% c(1, 2, 3), NA,
-                               ifelse(var_numeric == 1, 0,
-                                     ifelse(var_numeric == 2, 1,
-                                           ifelse(var_numeric == 3, 2, NA))))
-
-      if (verbose) {
-        cat("✓ Standardized:", original_var, "->", new_var, "(0-2 scale, higher = higher self-control)\n")
-      }
-    }
-  }
-
-  # =============================================================================
-  # 5. RECODE ORIGINALLY NORMAL-CODED VARIABLES (REVERSE-CODE TO 0-2 SCALE)
-  # =============================================================================
-
-  if (verbose) {
-    cat("\n=== STANDARDIZING ORIGINALLY NORMAL-CODED VARIABLES ===\n")
-  }
-
-  # Define variable name mappings for normal-coded variables
-  normal_var_names <- c("solitary", "distracted", "better_adults", "temper", "worries",
-                       "unhappy", "nervous", "fears", "restless", "fidgeting", "lying")
-
-  normal_original_suffixes <- c("spa0", "dca0", "gba0", "tta0", "mwa0", "uda0",
-                               "nca0", "fea0", "pba0", "fsa0", "oaa0")
-
-  # Recode each normal-coded variable
-  for (i in seq_along(normal_var_names)) {
-    original_var <- paste0(prefix, normal_original_suffixes[i])
-    new_var <- paste0(output_prefix, normal_var_names[i])
-
-    if (original_var %in% names(data)) {
-      var_numeric <- as.vector(data[[original_var]])
-      data[[new_var]] <- ifelse(!var_numeric %in% c(1, 2, 3), NA,
-                               ifelse(var_numeric == 1, 2,
-                                     ifelse(var_numeric == 2, 1,
-                                           ifelse(var_numeric == 3, 0, NA))))
-
-      if (verbose) {
-        cat("✓ Standardized:", original_var, "->", new_var, "(0-2 scale, higher = higher self-control)\n")
-      }
-    }
-  }
-
-  # =============================================================================
-  # 6. CHECK RECODED VARIABLES
-  # =============================================================================
-
-  # List of all new self-control variables
-  sc_vars_reverse <- paste0(output_prefix, reverse_var_names)
-  sc_vars_normal <- paste0(output_prefix, normal_var_names)
-  all_sc_vars <- c(sc_vars_reverse, sc_vars_normal)
-
-  # Check which recoded variables exist
-  existing_recoded <- all_sc_vars[all_sc_vars %in% names(data)]
-
-  if (verbose && length(existing_recoded) > 0) {
-    cat("\n=== RECODED VARIABLE DISTRIBUTIONS ===\n")
-    cat("Successfully recoded variables (", length(existing_recoded), "):\n\n", sep = "")
-
-    for (var in existing_recoded) {
-      cat("--- ", var, " ---\n", sep = "")
-      print(table(data[[var]], useNA = "ifany"))
-      cat("\n")
-    }
-  }
-
-  # =============================================================================
-  # 7. SUMMARY AND MAPPING
-  # =============================================================================
-
-  if (verbose) {
-    cat("\n=== PROCESSING SUMMARY ===\n")
-    cat("Original variables found:", length(existing_vars), "/", length(all_self_control_vars), "\n")
-    cat("Originally reverse-coded variables (now standardized):", length(sc_vars_reverse), "(10 total)\n")
-    cat("Originally normal-coded variables (now reverse-coded):", length(sc_vars_normal), "(11 total)\n")
-    cat("Successfully processed variables:", length(existing_recoded), "\n")
-
-    if (length(missing_vars) > 0) {
-      cat("\nMissing variables that need to be checked:\n")
-      for (var in missing_vars) {
-        cat("- ", var, "\n")
-      }
-    }
-
-    # Create variable mapping tables
-    cat("\n=== VARIABLE MAPPING ===\n")
-    cat("Originally reverse-coded variables (now standardized to 0-2 scale):\n")
-
-    reverse_mapping <- data.frame(
-      Original = paste0(prefix, reverse_original_suffixes),
-      New = paste0(output_prefix, reverse_var_names),
-      Description = c("Think things out before acting", "Having at least one good friend",
-                      "Generally liked by other children", "Being considerate of feelings",
-                      "Sharing readily with children", "Being helpful if someone hurt",
-                      "Being kind to younger children", "Often volunteering to help others",
-                      "Sees tasks through to end", "Generally obedient")
+  # Final concise report of availability per age
+  cat("\n=== RECODING COMPLETED ACROSS AGES ===\n")
+  for (age in c(3, 5, 7, 11, 14, 17)) {
+    age_chr <- as.character(age)
+    target_names <- c(
+      paste0("sc", age_chr, "_", positive_keys),
+      paste0("sc", age_chr, "_", negative_keys)
     )
-    print(reverse_mapping)
-
-    cat("\nOriginally normal-coded variables (now reverse-coded to 0-2 scale):\n")
-    normal_mapping <- data.frame(
-      Original = paste0(prefix, normal_original_suffixes),
-      New = paste0(output_prefix, normal_var_names),
-      Description = c("Being rather solitary", "Easily distracted", "Getting on better with adults",
-                      "Often has temper tantrums", "Having many worries", "Often unhappy/tearful",
-                      "Nervous in new situations", "Having many fears", "Restless/overactive",
-                      "Constantly fidgeting", "Lying or cheating")
-    )
-    print(normal_mapping)
-
-    cat("\nNote: All age", age, "self-control variables are now processed.\n")
-    cat("All recoded variables have prefix '", output_prefix, "' to distinguish from other age variables.\n", sep = "")
-    cat("All values other than 1, 2, or 3 are coded as missing (NA).\n")
-    cat("STANDARDIZED CODING: All variables use 0-2 scale where HIGHER values = HIGHER self-control.\n")
-    cat("Originally reverse-coded variables: 1->0, 2->1, 3->2\n")
-    cat("Originally normal-coded variables: 1->2, 2->1, 3->0 (reverse-coded for consistency)\n\n")
+    available <- sum(target_names %in% names(merged_data))
+    cat("Age", age_chr, ":", available, "/", length(target_names), "variables present\n")
   }
-
-  # Return invisible NULL (function modifies data in place)
-  invisible(NULL)
+  
+  # Check total number of new variables created
+  all_new_vars <- grep("^sc[0-9]+_", names(merged_data), value = TRUE)
+  cat("\nTotal new self-control variables created:", length(all_new_vars), "\n")
+  
+  cat("\n=== SCRIPT EXECUTION COMPLETED SUCCESSFULLY ===\n")
+  
+} else {
+  cat("merged_data not found in environment. Load data first, then source this script.\n")
 }
-
-# =============================================================================
-# 2. LOAD DATA AND APPLY FUNCTION TO ALL AGES
-# =============================================================================
-
-# Load the merged dataset
-# Note: This assumes the data preparation script has been run
-data_path <- "/home/siyang/dissertation_folder/data"
-merged_data <- readRDS(file.path(data_path, "merged1203.rds"))
-
-cat("=== MASTER SELF-CONTROL RECODING SCRIPT ===\n")
-cat("Processing self-control variables for all ages...\n\n")
-
-# Define ages to process
-ages_to_process <- c(3, 5, 7, 11, 14, 17)
-
-# Process each age
-for (age in ages_to_process) {
-  cat("Processing age", age, "...\n")
-  recode_self_control_age(age = age, data = merged_data, verbose = TRUE)
-  cat("✓ Completed processing for age", age, "\n\n")
-}
-
-# =============================================================================
-# 3. FINAL SUMMARY
-# =============================================================================
-
-cat("=== MASTER SCRIPT COMPLETION SUMMARY ===\n")
-cat("Successfully processed self-control variables for ages:", paste(ages_to_process, collapse = ", "), "\n\n")
-
-# Check total number of new variables created
-all_new_vars <- grep("^sc[0-9]+_", names(merged_data), value = TRUE)
-cat("Total new self-control variables created:", length(all_new_vars), "\n")
-
-# Breakdown by age
-for (age in ages_to_process) {
-  age_vars <- grep(paste0("^sc", age, "_"), names(merged_data), value = TRUE)
-  cat("Age", age, "variables:", length(age_vars), "\n")
-}
-
-cat("\n=== NEXT STEPS ===\n")
-cat("1. The merged_data object now contains all recoded self-control variables\n")
-cat("2. Consider saving the updated dataset: saveRDS(merged_data, 'path/to/updated_data.rds')\n")
-cat("3. Proceed with longitudinal growth curve modeling or other analyses\n")
-
-# =============================================================================
-# 4. OPTIONAL: SAVE UPDATED DATASET
-# =============================================================================
-
-# Uncomment the following lines to save the updated dataset
-# output_path <- file.path(data_path, "merged1203_with_self_control.rds")
-# saveRDS(merged_data, output_path)
-# cat("Updated dataset saved to:", output_path, "\n")
-
-cat("\nMaster script execution completed successfully!\n")
