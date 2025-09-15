@@ -22,7 +22,7 @@ p_load(psych)
 
 # Load the saved RDS file
 data_path <- "/home/siyang/dissertation_folder/data"
-merged_data <- readRDS(file.path(data_path, "merged1203.rds"))
+merged_data <- readRDS(file.path(data_path, "merged0914.rds"))
 
 # Basic info
 dim(merged_data)
