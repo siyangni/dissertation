@@ -188,7 +188,9 @@ if (!exists("merged_data")) {
 recoded_parenting_age7 <- recode_parenting(merged_data)
 merged_data <- recode_parenting(merged_data)
 
-
+# ============================================================================
+# MEASUREMENT ANALYSIS
+# ============================================================================
 
 ###### Measurement  #######
 
@@ -212,7 +214,6 @@ psych::alpha(recoded_parenting_age7[, involve], check.keys=TRUE)
 overall <- c(appropriate, warmth, involve)
 psych::alpha(recoded_parenting_age7[, overall], check.keys=TRUE)
 
-
 for (v in monitoring) {
   cat("\n", v, "\n")
   tab <- table(recoded_parenting_age7[[v]], useNA = "ifany")
@@ -220,15 +221,122 @@ for (v in monitoring) {
   print(round(100 * prop.table(tab), 1))
 }
 
+# ============================================================================
+# CONFIRMATORY FACTOR ANALYSIS (CFA) FOR PARENTING CONSTRUCT
+# ============================================================================
 
+# Check data availability for CFA variables
+cat("Checking data availability for CFA variables...\n")
+cfa_vars <- c("tv_rules_time", "tv_rules_hours", "no_tv_bedroom", "regular_bedtime",
+              "supervision_outdoor", "family_time_home", "evening_meal_parent_presence",
+              "internet_use_allowed", "tell_off", "take_away_treats", "timeout",
+              "smack_rev", "shout_rev", "bribe_rev", "ignore_rev",
+              "parent_child_closeness", "enjoy_listen_do", "express_affection",
+              "child_weekend_fun", "child_disclosure_home", "reading_together",
+              "storytelling", "music_together", "arts_crafts", "active_play")
 
-# PCA and Factor Analysis for 'appropriate' items
-# PCA
-pca_app <- psych::principal(X_app_complete, nfactors = 1, rotate = "none", scores = FALSE)
-print(pca_app)
+# Check which variables exist and have sufficient data
+available_vars <- intersect(cfa_vars, names(recoded_parenting_age7))
+cat("Available CFA variables:", length(available_vars), "out of", length(cfa_vars), "\n")
 
-# Factor Analysis
-fa_app <- psych::fa(X_app_complete, nfactors = 1, rotate = "oblimin", fm = "minres")
-print(fa_app)
+# Check missing data patterns
+missing_summary <- recoded_parenting_age7 %>%
+  select(all_of(available_vars)) %>%
+  summarise(across(everything(), ~sum(is.na(.x)))) %>%
+  pivot_longer(everything(), names_to = "variable", values_to = "missing_count") %>%
+  mutate(total_n = nrow(recoded_parenting_age7),
+         missing_pct = round(100 * missing_count / total_n, 1)) %>%
+  arrange(desc(missing_pct))
 
+print(missing_summary, n = 30)
 
+# Remove variables with >50% missing data
+usable_vars <- missing_summary %>%
+  filter(missing_pct <= 50) %>%
+  pull(variable)
+
+cat("\nUsable variables for CFA (<=50% missing):", length(usable_vars), "\n")
+cat("Variables:", paste(usable_vars, collapse = ", "), "\n")
+
+# ============================================================================
+# APPROACH 1: CFA with Continuous Recoded Variables (0-1 scale)
+# ============================================================================
+if (length(usable_vars) >= 3) {
+  cat("\n=== APPROACH 1: Continuous CFA (ML estimator) ===\n")
+  
+  # Create model string with available variables
+  model_continuous <- paste("parenting =~", paste(usable_vars, collapse = " + "))
+  cat("Model specification:\n", model_continuous, "\n")
+  
+  # Fit CFA with ML estimator (appropriate for continuous variables)
+  fit_continuous <- lavaan::cfa(model_continuous, 
+                               data = recoded_parenting_age7,
+                               estimator = "ML", 
+                               missing = "fiml")  # Full Information ML for missing data
+  
+  cat("\n--- Continuous CFA Results ---\n")
+  summary(fit_continuous, fit.measures = TRUE, standardized = TRUE)
+  
+  # ============================================================================
+  # APPROACH 2: CFA with Original Ordinal Variables (WLSMV estimator)
+  # ============================================================================
+  cat("\n=== APPROACH 2: Ordinal CFA (WLSMV estimator) ===\n")
+  
+  # Map recoded variables back to original variables
+  var_mapping <- c(
+    "tv_rules_time" = "dmtvrla0",
+    "tv_rules_hours" = "dmtvrha0", 
+    "no_tv_bedroom" = "dmtvrma0",
+    "regular_bedtime" = "dmberea0",
+    "supervision_outdoor" = "dmploua0",
+    "family_time_home" = "dmfrtv00",
+    "evening_meal_parent_presence" = "dmevwoaa",
+    "internet_use_allowed" = "dminlna0",  # Using first internet variable
+    "tell_off" = "dmditea0",
+    "take_away_treats" = "dmditra0",
+    "timeout" = "dmdibna0",
+    "smack_rev" = "dmdisma0",
+    "shout_rev" = "dmdisha0", 
+    "bribe_rev" = "dmdibra0",
+    "ignore_rev" = "dmdiiga0",
+    "parent_child_closeness" = "dmschca0",
+    "enjoy_listen_do" = "dmenlia0",
+    "express_affection" = "dmexafa0",
+    "child_weekend_fun" = "dcsc0019",
+    "child_disclosure_home" = "dcsc0020"
+  )
+  
+  # Get original variables that correspond to usable recoded variables
+  usable_original <- var_mapping[usable_vars]
+  usable_original <- usable_original[!is.na(usable_original)]
+  available_original <- intersect(usable_original, names(recoded_parenting_age7))
+  
+  if (length(available_original) >= 3) {
+    # Create model with original variable names
+    model_ordinal <- paste("parenting =~", paste(available_original, collapse = " + "))
+    cat("Ordinal model specification:\n", model_ordinal, "\n")
+    
+    # Prepare data with ordered factors
+    ordinal_data <- recoded_parenting_age7 %>%
+      mutate(across(all_of(available_original), ~{
+        # Convert to ordered factor, removing missing codes
+        .x[.x %in% c(-9, -8, -1)] <- NA
+        ordered(.x)
+      }))
+    
+    # Fit ordinal CFA
+    fit_ordinal <- lavaan::cfa(model_ordinal,
+                              data = ordinal_data,
+                              estimator = "WLSMV",
+                              ordered = available_original,
+                              missing = "pairwise")
+    
+    cat("\n--- Ordinal CFA Results ---\n")
+    summary(fit_ordinal, fit.measures = TRUE, standardized = TRUE)
+  } else {
+    cat("Insufficient original ordinal variables available for ordinal CFA\n")
+  }
+  
+} else {
+  cat("Insufficient variables for CFA analysis (need at least 3)\n")
+}
