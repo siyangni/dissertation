@@ -1,0 +1,1986 @@
+[1mdiff --git a/lcmsr_parenting_run.log b/lcmsr_parenting_run.log[m
+[1mdeleted file mode 100644[m
+[1mindex ea1927c..0000000[m
+[1m--- a/lcmsr_parenting_run.log[m
+[1m+++ /dev/null[m
+[36m@@ -1,1951 +0,0 @@[m
+[31m-nohup: ignoring input[m
+[31m-[m
+[31m-> library(pacman)[m
+[31m-[m
+[31m-> p_load(lavaan)[m
+[31m-[m
+[31m-> p_load(semTools)[m
+[31m-[m
+[31m-> utils::globalVariables(c("merged_data", "recoded_parenting_age7"))[m
+[31m-[1] "merged_data"            "recoded_parenting_age7"[m
+[31m-[m
+[31m-> if (!exists("merged_data")) {[m
+[31m-+     data_path <- "/home/siyang/dissertation_folder/data"[m
+[31m-+     merged_data <- readRDS(file.path(data_path, "merged09 ..." ... [TRUNCATED] [m
+[31m-[m
+[31m-> if (sum(grepl("^sc(3|5|7|11|14|17)_", names(merged_data))) == [m
+[31m-+     0) {[m
+[31m-+     source("/home/siyang/dissertation_folder/dissertation/scripts/recode ..." ... [TRUNCATED] [m
+[31m-[m
+[31m-=== SELF-CONTROL RECODING (AGE3) ===[m
+[31m-✓ bmsdsta0 -> sc3_think_act (positive)[m
+[31m-✓ bmsdgfa0 -> sc3_good_friend (positive)[m
+[31m-✓ bmsdlca0 -> sc3_liked_children (positive)[m
+[31m-✓ bmsdpfa0 -> sc3_considerate (positive)[m
+[31m-✓ bmsdsra0 -> sc3_sharing (positive)[m
+[31m-✓ bmsdhua0 -> sc3_helpful (positive)[m
+[31m-✓ bmsdkya0 -> sc3_kind_younger (positive)[m
+[31m-✓ bmsdvha0 -> sc3_volunteer_help (positive)[m
+[31m-✓ bmsdtea0 -> sc3_task_completion (positive)[m
+[31m-✓ bmsdora0 -> sc3_obedient (positive)[m
+[31m-✓ bmsdspa0 -> sc3_solitary (negative)[m
+[31m-✓ bmsddca0 -> sc3_distracted (negative)[m
+[31m-✓ bmsdgba0 -> sc3_better_adults (negative)[m
+[31m-✓ bmsdtta0 -> sc3_temper (negative)[m
+[31m-✓ bmsdmwa0 -> sc3_worries (negative)[m
+[31m-✓ bmsduda0 -> sc3_unhappy (negative)[m
+[31m-✓ bmsdnca0 -> sc3_nervous (negative)[m
+[31m-✓ bmsdfea0 -> sc3_fears (negative)[m
+[31m-✓ bmsdpba0 -> sc3_restless (negative)[m
+[31m-✓ bmsdfsa0 -> sc3_fidgeting (negative)[m
+[31m-✓ bmsdoaa0 -> sc3_lying (negative)[m
+[31m-Created variables: 21 [m
+[31m-- sc3_think_act[m
+[31m-- sc3_good_friend[m
+[31m-- sc3_liked_children[m
+[31m-- sc3_considerate[m
+[31m-- sc3_sharing[m
+[31m-- sc3_helpful[m
+[31m-- sc3_kind_younger[m
+[31m-- sc3_volunteer_help[m
+[31m-- sc3_task_completion[m
+[31m-- sc3_obedient[m
+[31m-- sc3_solitary[m
+[31m-- sc3_distracted[m
+[31m-- sc3_better_adults[m
+[31m-- sc3_temper[m
+[31m-- sc3_worries[m
+[31m-- sc3_unhappy[m
+[31m-- sc3_nervous[m
+[31m-- sc3_fears[m
+[31m-- sc3_restless[m
+[31m-- sc3_fidgeting[m
+[31m-- sc3_lying[m
+[31m-[m
+[31m-[m
+[31m-=== SELF-CONTROL RECODING (AGE5) ===[m
+[31m-✓ cmsdsta0 -> sc5_think_act (positive)[m
+[31m-✓ cmsdgfa0 -> sc5_good_friend (positive)[m
+[31m-✓ cmsdlca0 -> sc5_liked_children (positive)[m
+[31m-✓ cmsdpfa0 -> sc5_considerate (positive)[m
+[31m-✓ cmsdsra0 -> sc5_sharing (positive)[m
+[31m-✓ cmsdhua0 -> sc5_helpful (positive)[m
+[31m-✓ cmsdkya0 -> sc5_kind_younger (positive)[m
+[31m-✓ cmsdvha0 -> sc5_volunteer_help (positive)[m
+[31m-✓ cmsdtea0 -> sc5_task_completion (positive)[m
+[31m-✓ cmsdora0 -> sc5_obedient (positive)[m
+[31m-✓ cmsdspa0 -> sc5_solitary (negative)[m
+[31m-✓ cmsddca0 -> sc5_distracted (negative)[m
+[31m-✓ cmsdgba0 -> sc5_better_adults (negative)[m
+[31m-✓ cmsdtta0 -> sc5_temper (negative)[m
+[31m-✓ cmsdmwa0 -> sc5_worries (negative)[m
+[31m-✓ cmsduda0 -> sc5_unhappy (negative)[m
+[31m-✓ cmsdnca0 -> sc5_nervous (negative)[m
+[31m-✓ cmsdfea0 -> sc5_fears (negative)[m
+[31m-✓ cmsdpba0 -> sc5_restless (negative)[m
+[31m-✓ cmsdfsa0 -> sc5_fidgeting (negative)[m
+[31m-✓ cmsdoaa0 -> sc5_lying (negative)[m
+[31m-Created variables: 21 [m
+[31m-- sc5_think_act[m
+[31m-- sc5_good_friend[m
+[31m-- sc5_liked_children[m
+[31m-- sc5_considerate[m
+[31m-- sc5_sharing[m
+[31m-- sc5_helpful[m
+[31m-- sc5_kind_younger[m
+[31m-- sc5_volunteer_help[m
+[31m-- sc5_task_completion[m
+[31m-- sc5_obedient[m
+[31m-- sc5_solitary[m
+[31m-- sc5_distracted[m
+[31m-- sc5_better_adults[m
+[31m-- sc5_temper[m
+[31m-- sc5_worries[m
+[31m-- sc5_unhappy[m
+[31m-- sc5_nervous[m
+[31m-- sc5_fears[m
+[31m-- sc5_restless[m
+[31m-- sc5_fidgeting[m
+[31m-- sc5_lying[m
+[31m-[m
+[31m-[m
+[31m-=== SELF-CONTROL RECODING (AGE7) ===[m
+[31m-✓ dmsdsta0 -> sc7_think_act (positive)[m
+[31m-✓ dmsdgfa0 -> sc7_good_friend (positive)[m
+[31m-✓ dmsdlca0 -> sc7_liked_children (positive)[m
+[31m-✓ dmsdpfa0 -> sc7_considerate (positive)[m
+[31m-✓ dmsdsra0 -> sc7_sharing (positive)[m
+[31m-✓ dmsdhua0 -> sc7_helpful (positive)[m
+[31m-✓ dmsdkya0 -> sc7_kind_younger (positive)[m
+[31m-✓ dmsdvha0 -> sc7_volunteer_help (positive)[m
+[31m-✓ dmsdtea0 -> sc7_task_completion (positive)[m
+[31m-✓ dmsdora0 -> sc7_obedient (positive)[m
+[31m-✓ dmsdspa0 -> sc7_solitary (negative)[m
+[31m-✓ dmsddca0 -> sc7_distracted (negative)[m
+[31m-✓ dmsdgba0 -> sc7_better_adults (negative)[m
+[31m-✓ dmsdtta0 -> sc7_temper (negative)[m
+[31m-✓ dmsdmwa0 -> sc7_worries (negative)[m
+[31m-✓ dmsduda0 -> sc7_unhappy (negative)[m
+[31m-✓ dmsdnca0 -> sc7_nervous (negative)[m
+[31m-✓ dmsdfea0 -> sc7_fears (negative)[m
+[31m-✓ dmsdpba0 -> sc7_restless (negative)[m
+[31m-✓ dmsdfsa0 -> sc7_fidgeting (negative)[m
+[31m-✓ dmsdoaa0 -> sc7_lying (negative)[m
+[31m-Created variables: 21 [m
+[31m-- sc7_think_act[m
+[31m-- sc7_good_friend[m
+[31m-- sc7_liked_children[m
+[31m-- sc7_considerate[m
+[31m-- sc7_sharing[m
+[31m-- sc7_helpful[m
+[31m-- sc7_kind_younger[m
+[31m-- sc7_volunteer_help[m
+[31m-- sc7_task_completion[m
+[31m-- sc7_obedient[m
+[31m-- sc7_solitary[m
+[31m-- sc7_distracted[m
+[31m-- sc7_better_adults[m
+[31m-- sc7_temper[m
+[31m-- sc7_worries[m
+[31m-- sc7_unhappy[m
+[31m-- sc7_nervous[m
+[31m-- sc7_fears[m
+[31m-- sc7_restless[m
+[31m-- sc7_fidgeting[m
+[31m-- sc7_lying[m
+[31m-[m
+[31m-[m
+[31m-=== SELF-CONTROL RECODING (AGE11) ===[m
+[31m-✓ epsdst00 -> sc11_think_act (positive)[m
+[31m-✓ epsdgf00 -> sc11_good_friend (positive)[m
+[31m-✓ epsdlc00 -> sc11_liked_children (positive)[m
+[31m-✓ epsdpf00 -> sc11_considerate (positive)[m
+[31m-✓ epsdsr00 -> sc11_sharing (positive)[m
+[31m-✓ epsdhu00 -> sc11_helpful (positive)[m
+[31m-✓ epsdky00 -> sc11_kind_younger (positive)[m
+[31m-✓ epsdvh00 -> sc11_volunteer_help (positive)[m
+[31m-✓ epsdte00 -> sc11_task_completion (positive)[m
+[31m-✓ epsdor00 -> sc11_obedient (positive)[m
+[31m-✓ epsdsp00 -> sc11_solitary (negative)[m
+[31m-✓ epsddc00 -> sc11_distracted (negative)[m
+[31m-✓ epsdgb00 -> sc11_better_adults (negative)[m
+[31m-✓ epsdtt00 -> sc11_temper (negative)[m
+[31m-✓ epsdmw00 -> sc11_worries (negative)[m
+[31m-✓ epsdud00 -> sc11_unhappy (negative)[m
+[31m-✓ epsdnc00 -> sc11_nervous (negative)[m
+[31m-✓ epsdfe00 -> sc11_fears (negative)[m
+[31m-✓ epsdpb00 -> sc11_restless (negative)[m
+[31m-✓ epsdfs00 -> sc11_fidgeting (negative)[m
+[31m-✓ epsdoa00 -> sc11_lying (negative)[m
+[31m-Created variables: 21 [m
+[31m-- sc11_think_act[m
+[31m-- sc11_good_friend[m
+[31m-- sc11_liked_children[m
+[31m-- sc11_considerate[m
+[31m-- sc11_sharing[m
+[31m-- sc11_helpful[m
+[31m-- sc11_kind_younger[m
+[31m-- sc11_volunteer_help[m
+[31m-- sc11_task_completion[m
+[31m-- sc11_obedient[m
+[31m-- sc11_solitary[m
+[31m-- sc11_distracted[m
+[31m-- sc11_better_adults[m
+[31m-- sc11_temper[m
+[31m-- sc11_worries[m
+[31m-- sc11_unhappy[m
+[31m-- sc11_nervous[m
+[31m-- sc11_fears[m
+[31m-- sc11_restless[m
+[31m-- sc11_fidgeting[m
+[31m-- sc11_lying[m
+[31m-[m
+[31m-[m
+[31m-=== SELF-CONTROL RECODING (AGE14) ===[m
+[31m-✓ fpsdst00 -> sc14_think_act (positive)[m
+[31m-✓ fpsdgf00 -> sc14_good_friend (positive)[m
+[31m-✓ fpsdlc00 -> sc14_liked_children (positive)[m
+[31m-✓ fpsdpf00 -> sc14_considerate (positive)[m
+[31m-✓ fpsdsr00 -> sc14_sharing (positive)[m
+[31m-✓ fpsdhu00 -> sc14_helpful (positive)[m
+[31m-✓ fpsdky00 -> sc14_kind_younger (positive)[m
+[31m-✓ fpsdvh00 -> sc14_volunteer_help (positive)[m
+[31m-✓ fpsdte00 -> sc14_task_completion (positive)[m
+[31m-✓ fpsdor00 -> sc14_obedient (positive)[m
+[31m-✓ fpsdsp00 -> sc14_solitary (negative)[m
+[31m-✓ fpsddc00 -> sc14_distracted (negative)[m
+[31m-✓ fpsdgb00 -> sc14_better_adults (negative)[m
+[31m-✓ fpsdtt00 -> sc14_temper (negative)[m
+[31m-✓ fpsdmw00 -> sc14_worries (negative)[m
+[31m-✓ fpsdud00 -> sc14_unhappy (negative)[m
+[31m-✓ fpsdnc00 -> sc14_nervous (negative)[m
+[31m-✓ fpsdfe00 -> sc14_fears (negative)[m
+[31m-✓ fpsdpb00 -> sc14_restless (negative)[m
+[31m-✓ fpsdfs00 -> sc14_fidgeting (negative)[m
+[31m-✓ fpsdoa00 -> sc14_lying (negative)[m
+[31m-Created variables: 21 [m
+[31m-- sc14_think_act[m
+[31m-- sc14_good_friend[m
+[31m-- sc14_liked_children[m
+[31m-- sc14_considerate[m
+[31m-- sc14_sharing[m
+[31m-- sc14_helpful[m
+[31m-- sc14_kind_younger[m
+[31m-- sc14_volunteer_help[m
+[31m-- sc14_task_completion[m
+[31m-- sc14_obedient[m
+[31m-- sc14_solitary[m
+[31m-- sc14_distracted[m
+[31m-- sc14_better_adults[m
+[31m-- sc14_temper[m
+[31m-- sc14_worries[m
+[31m-- sc14_unhappy[m
+[31m-- sc14_nervous[m
+[31m-- sc14_fears[m
+[31m-- sc14_restless[m
+[31m-- sc14_fidgeting[m
+[31m-- sc14_lying[m
+[31m-[m
+[31m-[m
+[31m-=== SELF-CONTROL RECODING (AGE17) ===[m
+[31m-✓ gpsdst00 -> sc17_think_act (positive)[m
+[31m-✓ gpsdgf00 -> sc17_good_friend (positive)[m
+[31m-✓ gpsdlc00 -> sc17_liked_children (positive)[m
+[31m-✓ gpsdpf00 -> sc17_considerate (positive)[m
+[31m-✓ gpsdsr00 -> sc17_sharing (positive)[m
+[31m-✓ gpsdhu00 -> sc17_helpful (positive)[m
+[31m-✓ gpsdky00 -> sc17_kind_younger (positive)[m
+[31m-✓ gpsdvh00 -> sc17_volunteer_help (positive)[m
+[31m-✓ gpsdte00 -> sc17_task_completion (positive)[m
+[31m-✓ gpsdor00 -> sc17_obedient (positive)[m
+[31m-✓ gpsdsp00 -> sc17_solitary (negative)[m
+[31m-✓ gpsddc00 -> sc17_distracted (negative)[m
+[31m-✓ gpsdgb00 -> sc17_better_adults (negative)[m
+[31m-✓ gpsdtt00 -> sc17_temper (negative)[m
+[31m-✓ gpsdmw00 -> sc17_worries (negative)[m
+[31m-✓ gpsdud00 -> sc17_unhappy (negative)[m
+[31m-✓ gpsdnc00 -> sc17_nervous (negative)[m
+[31m-✓ gpsdfe00 -> sc17_fears (negative)[m
+[31m-✓ gpsdpb00 -> sc17_restless (negative)[m
+[31m-✓ gpsdfs00 -> sc17_fidgeting (negative)[m
+[31m-✓ gpsdoa00 -> sc17_lying (negative)[m
+[31m-Created variables: 21 [m
+[31m-- sc17_think_act[m
+[31m-- sc17_good_friend[m
+[31m-- sc17_liked_children[m
+[31m-- sc17_considerate[m
+[31m-- sc17_sharing[m
+[31m-- sc17_helpful[m
+[31m-- sc17_kind_younger[m
+[31m-- sc17_volunteer_help[m
+[31m-- sc17_task_completion[m
+[31m-- sc17_obedient[m
+[31m-- sc17_solitary[m
+[31m-- sc17_distracted[m
+[31m-- sc17_better_adults[m
+[31m-- sc17_temper[m
+[31m-- sc17_worries[m
+[31m-- sc17_unhappy[m
+[31m-- sc17_nervous[m
+[31m-- sc17_fears[m
+[31m-- sc17_restless[m
+[31m-- sc17_fidgeting[m
+[31m-- sc17_lying[m
+[31m-[m
+[31m-[m
+[31m-=== RECODING COMPLETED ACROSS AGES ===[m
+[31m-Age 3 : 21 / 21 variables present[m
+[31m-Age 5 : 21 / 21 variables present[m
+[31m-Age 7 : 21 / 21 variables present[m
+[31m-Age 11 : 21 / 21 variables present[m
+[31m-Age 14 : 21 / 21 variables present[m
+[31m-Age 17 : 21 / 21 variables present[m
+[31m-=== MASTER SELF-CONTROL RECODING SCRIPT ===[m
+[31m-Processing self-control variables for all ages...[m
+[31m-[m
+[31m-Processing age 3 ...[m
+[31m-[m
+[31m-=== SELF-CONTROL VARIABLES PROCESSING (AGE 3) ===[m
+[31m-Using prefix: 'bmsd' -> output prefix: 'sc3_'[m
+[31m-[m
+[31m-Variables requiring reverse coding: 10 [m
+[31m-Variables with normal coding: 11 [m
+[31m-Total variables to process: 21 [m
+[31m-[m
+[31m-=== VARIABLE AVAILABILITY ===[m
+[31m-Found variables (21/21): bmsdsta0, bmsdgfa0, bmsdlca0, bmsdpfa0, bmsdsra0, bmsdhua0, bmsdkya0, bmsdvha0, bmsdtea0, bmsdora0, bmsdspa0, bmsddca0, bmsdgba0, bmsdtta0, bmsdmwa0, bmsduda0, bmsdnca0, bmsdfea0, bmsdpba0, bmsdfsa0, bmsdoaa0[m
+[31m-[m
+[31m-=== ORIGINAL VARIABLE DISTRIBUTIONS ===[m
+[31m-[m
+[31m---- bmsdsta0 ---[m
+[31m-var_numeric[m
+[31m-  -2   -1    1    2    3    4 <NA> [m
+[31m-  11  742 2300 8532 2702 1303 3653 [m
+[31m-[m
+[31m---- bmsdgfa0 ---[m
+[31m-var_numeric[m
+[31m-   -2    -1     1     2     3     4  <NA> [m
+[31m-   11   742   961  3063 10099   714  3653 [m
+[31m-[m
+[31m---- bmsdlca0 ---[m
+[31m-var_numeric[m
+[31m-   -2    -1     1     2     3     4  <NA> [m
+[31m-   11   742    82  3226 11171   358  3653 [m
+[31m-[m
+[31m---- bmsdpfa0 ---[m
+[31m-var_numeric[m
+[31m-  -1    1    2    3    4 <NA> [m
+[31m- 753  991 7164 5861  821 3653 [m
+[31m-[m
+[31m---- bmsdsra0 ---[m
+[31m-var_numeric[m
+[31m-  -2   -1    1    2    3    4 <NA> [m
+[31m-  11  742 1141 8081 5454  161 3653 [m
+[31m-[m
+[31m---- bmsdhua0 ---[m
+[31m-var_numeric[m
+[31m-  -2   -1    1    2    3    4 <NA> [m
+[31m-  11  742  376 4762 9346  353 3653 [m
+[31m-[m
+[31m---- bmsdkya0 ---[m
+[31m-var_numeric[m
+[31m-  -2   -1    1    2    3    4 <NA> [m
+[31m-  11  742  277 4470 9578  512 3653 [m
+[31m-[m
+[31m---- bmsdvha0 ---[m
+[31m-var_numeric[m
+[31m-  -2   -1    1    2    3    4 <NA> [m
+[31m-  11  742  670 6252 6947  968 3653 [m
+[31m-[m
+[31m---- bmsdtea0 ---[m
+[31m-var_numeric[m
+[31m-  -2   -1    1    2    3    4 <NA> [m
+[31m-  11  742 1905 8579 3686  667 3653 [m
+[31m-[m
+[31m---- bmsdora0 ---[m
+[31m-var_numeric[m
+[31m-  -2   -1    1    2    3    4 <NA> [m
+[31m-  11  742 1002 8413 5255  167 3653 [m
+[31m-[m
+[31m---- bmsdspa0 ---[m
+[31m-var_numeric[m
+[31m-  -2   -1    1    2    3    4 <NA> [m
+[31m-  12  742 9375 4096 1077  288 3653 [m
+[31m-[m
+[31m---- bmsddca0 ---[m
+[31m-var_numeric[m
+[31m-  -2   -1    1    2    3    4 <NA> [m
+[31m-  11  742 5807 6564 1976  490 3653 [m
+[31m-[m
+[31m---- bmsdgba0 ---[m
+[31m-var_numeric[m
+[31m-  -2   -1    1    2    3    4 <NA> [m
+[31m-  11  742 8606 3594  996 1641 3653 [m
+[31m-[m
+[31m---- bmsdtta0 ---[m
+[31m-var_numeric[m
+[31m-  -2   -1    1    2    3    4 <NA> [m
+[31m-  11  742 4907 6429 3320  181 3653 [m
+[31m-[m
+[31m---- bmsdmwa0 ---[m
+[31m-var_numeric[m
+[31m-   -2    -1     1     2     3     4  <NA> [m
+[31m-   11   742 13170   980   182   505  3653 [m
+[31m-[m
+[31m---- bmsduda0 ---[m
+[31m-var_numeric[m
+[31m-   -2    -1     1     2     3     4  <NA> [m
+[31m-   11   742 13660   817   186   174  3653 [m
+[31m-[m
+[31m---- bmsdnca0 ---[m
+[31m-var_numeric[m
+[31m-  -2   -1    1    2    3    4 <NA> [m
+[31m-  11  742 6737 5672 2067  361 3653 [m
+[31m-[m
+[31m---- bmsdfea0 ---[m
+[31m-var_numeric[m
+[31m-  -2   -1    1    2    3    4 <NA> [m
+[31m-  11  742 9946 3560  861  470 3653 [m
+[31m-[m
+[31m---- bmsdpba0 ---[m
+[31m-var_numeric[m
+[31m-   -2    -1     1     2     3     4  <NA> [m
+[31m-   11   742 12805   987   176   869  3653 [m
+[31m-[m
+[31m---- bmsdfsa0 ---[m
+[31m-var_numeric[m
+[31m-  -2   -1    1    2    3    4 <NA> [m
+[31m-  11  742 8412 4167 1829  429 3653 [m
+[31m-[m
+[31m---- bmsdoaa0 ---[m
+[31m-var_numeric[m
+[31m-  -2   -1    1    2    3    4 <NA> [m
+[31m-  11  742 6929 5864 1706  338 3653 [m
+[31m-[m
+[31m-=== STANDARDIZING ORIGINALLY REVERSE-CODED VARIABLES ===[m
+[31m-✓ Standardized: bmsdsta0 -> sc3_think_act (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: bmsdgfa0 -> sc3_good_friend (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: bmsdlca0 -> sc3_liked_children (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: bmsdpfa0 -> sc3_considerate (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: bmsdsra0 -> sc3_sharing (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: bmsdhua0 -> sc3_helpful (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: bmsdkya0 -> sc3_kind_younger (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: bmsdvha0 -> sc3_volunteer_help (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: bmsdtea0 -> sc3_task_completion (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: bmsdora0 -> sc3_obedient (0-2 scale, higher = higher self-control)[m
+[31m-[m
+[31m-=== STANDARDIZING ORIGINALLY NORMAL-CODED VARIABLES ===[m
+[31m-✓ Standardized: bmsdspa0 -> sc3_solitary (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: bmsddca0 -> sc3_distracted (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: bmsdgba0 -> sc3_better_adults (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: bmsdtta0 -> sc3_temper (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: bmsdmwa0 -> sc3_worries (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: bmsduda0 -> sc3_unhappy (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: bmsdnca0 -> sc3_nervous (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: bmsdfea0 -> sc3_fears (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: bmsdpba0 -> sc3_restless (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: bmsdfsa0 -> sc3_fidgeting (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: bmsdoaa0 -> sc3_lying (0-2 scale, higher = higher self-control)[m
+[31m-[m
+[31m-=== RECODED VARIABLE DISTRIBUTIONS ===[m
+[31m-Successfully recoded variables (21):[m
+[31m-[m
+[31m---- sc3_think_act ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-2300 8532 2702 5709 [m
+[31m-[m
+[31m---- sc3_good_friend ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  961  3063 10099  5120 [m
+[31m-[m
+[31m---- sc3_liked_children ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-   82  3226 11171  4764 [m
+[31m-[m
+[31m---- sc3_considerate ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 991 7164 5861 5227 [m
+[31m-[m
+[31m---- sc3_sharing ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1141 8081 5454 4567 [m
+[31m-[m
+[31m---- sc3_helpful ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 376 4762 9346 4759 [m
+[31m-[m
+[31m---- sc3_kind_younger ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 277 4470 9578 4918 [m
+[31m-[m
+[31m---- sc3_volunteer_help ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 670 6252 6947 5374 [m
+[31m-[m
+[31m---- sc3_task_completion ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1905 8579 3686 5073 [m
+[31m-[m
+[31m---- sc3_obedient ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1002 8413 5255 4573 [m
+[31m-[m
+[31m---- sc3_solitary ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1077 4096 9375 4695 [m
+[31m-[m
+[31m---- sc3_distracted ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1976 6564 5807 4896 [m
+[31m-[m
+[31m---- sc3_better_adults ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 996 3594 8606 6047 [m
+[31m-[m
+[31m---- sc3_temper ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-3320 6429 4907 4587 [m
+[31m-[m
+[31m---- sc3_worries ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  182   980 13170  4911 [m
+[31m-[m
+[31m---- sc3_unhappy ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  186   817 13660  4580 [m
+[31m-[m
+[31m---- sc3_nervous ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-2067 5672 6737 4767 [m
+[31m-[m
+[31m---- sc3_fears ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 861 3560 9946 4876 [m
+[31m-[m
+[31m---- sc3_restless ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  176   987 12805  5275 [m
+[31m-[m
+[31m---- sc3_fidgeting ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1829 4167 8412 4835 [m
+[31m-[m
+[31m---- sc3_lying ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1706 5864 6929 4744 [m
+[31m-[m
+[31m-[m
+[31m-=== PROCESSING SUMMARY ===[m
+[31m-Original variables found: 21 / 21 [m
+[31m-Originally reverse-coded variables (now standardized): 10 (10 total)[m
+[31m-Originally normal-coded variables (now reverse-coded): 11 (11 total)[m
+[31m-Successfully processed variables: 21 [m
+[31m-[m
+[31m-=== VARIABLE MAPPING ===[m
+[31m-Originally reverse-coded variables (now standardized to 0-2 scale):[m
+[31m-   Original                 New                       Description[m
+[31m-1  bmsdsta0       sc3_think_act    Think things out before acting[m
+[31m-2  bmsdgfa0     sc3_good_friend   Having at least one good friend[m
+[31m-3  bmsdlca0  sc3_liked_children Generally liked by other children[m
+[31m-4  bmsdpfa0     sc3_considerate     Being considerate of feelings[m
+[31m-5  bmsdsra0         sc3_sharing     Sharing readily with children[m
+[31m-6  bmsdhua0         sc3_helpful     Being helpful if someone hurt[m
+[31m-7  bmsdkya0    sc3_kind_younger    Being kind to younger children[m
+[31m-8  bmsdvha0  sc3_volunteer_help Often volunteering to help others[m
+[31m-9  bmsdtea0 sc3_task_completion         Sees tasks through to end[m
+[31m-10 bmsdora0        sc3_obedient                Generally obedient[m
+[31m-[m
+[31m-Originally normal-coded variables (now reverse-coded to 0-2 scale):[m
+[31m-   Original               New                   Description[m
+[31m-1  bmsdspa0      sc3_solitary         Being rather solitary[m
+[31m-2  bmsddca0    sc3_distracted             Easily distracted[m
+[31m-3  bmsdgba0 sc3_better_adults Getting on better with adults[m
+[31m-4  bmsdtta0        sc3_temper     Often has temper tantrums[m
+[31m-5  bmsdmwa0       sc3_worries           Having many worries[m
+[31m-6  bmsduda0       sc3_unhappy         Often unhappy/tearful[m
+[31m-7  bmsdnca0       sc3_nervous     Nervous in new situations[m
+[31m-8  bmsdfea0         sc3_fears             Having many fears[m
+[31m-9  bmsdpba0      sc3_restless           Restless/overactive[m
+[31m-10 bmsdfsa0     sc3_fidgeting          Constantly fidgeting[m
+[31m-11 bmsdoaa0         sc3_lying             Lying or cheating[m
+[31m-[m
+[31m-Note: All age 3 self-control variables are now processed.[m
+[31m-All recoded variables have prefix 'sc3_' to distinguish from other age variables.[m
+[31m-All values other than 1, 2, or 3 are coded as missing (NA).[m
+[31m-STANDARDIZED CODING: All variables use 0-2 scale where HIGHER values = HIGHER self-control.[m
+[31m-Originally reverse-coded variables: 1->0, 2->1, 3->2[m
+[31m-Originally normal-coded variables: 1->2, 2->1, 3->0 (reverse-coded for consistency)[m
+[31m-[m
+[31m-✓ Completed processing for age 3 [m
+[31m-[m
+[31m-Processing age 5 ...[m
+[31m-[m
+[31m-=== SELF-CONTROL VARIABLES PROCESSING (AGE 5) ===[m
+[31m-Using prefix: 'cmsd' -> output prefix: 'sc5_'[m
+[31m-[m
+[31m-Variables requiring reverse coding: 10 [m
+[31m-Variables with normal coding: 11 [m
+[31m-Total variables to process: 21 [m
+[31m-[m
+[31m-=== VARIABLE AVAILABILITY ===[m
+[31m-Found variables (21/21): cmsdsta0, cmsdgfa0, cmsdlca0, cmsdpfa0, cmsdsra0, cmsdhua0, cmsdkya0, cmsdvha0, cmsdtea0, cmsdora0, cmsdspa0, cmsddca0, cmsdgba0, cmsdtta0, cmsdmwa0, cmsduda0, cmsdnca0, cmsdfea0, cmsdpba0, cmsdfsa0, cmsdoaa0[m
+[31m-[m
+[31m-=== ORIGINAL VARIABLE DISTRIBUTIONS ===[m
+[31m-[m
+[31m---- cmsdsta0 ---[m
+[31m-var_numeric[m
+[31m-  -9   -8   -1    1    2    3    4 <NA> [m
+[31m-   2    7  470 1665 9352 3209  541 3997 [m
+[31m-[m
+[31m---- cmsdgfa0 ---[m
+[31m-var_numeric[m
+[31m-   -9    -8    -1     1     2     3     4  <NA> [m
+[31m-    1     2   470   318  1400 12870   185  3997 [m
+[31m-[m
+[31m---- cmsdlca0 ---[m
+[31m-var_numeric[m
+[31m-   -9    -8    -1     1     2     3     4  <NA> [m
+[31m-    1     3   470    97  1780 12771   124  3997 [m
+[31m-[m
+[31m---- cmsdpfa0 ---[m
+[31m-var_numeric[m
+[31m-  -9   -8   -1    1    2    3    4 <NA> [m
+[31m-   1    3  470  397 5164 9011  200 3997 [m
+[31m-[m
+[31m---- cmsdsra0 ---[m
+[31m-var_numeric[m
+[31m-  -9   -8   -1    1    2    3    4 <NA> [m
+[31m-   1    2  470  421 5503 8793   56 3997 [m
+[31m-[m
+[31m---- cmsdhua0 ---[m
+[31m-var_numeric[m
+[31m-   -9    -8    -1     1     2     3     4  <NA> [m
+[31m-    1     2   470   258  3032 11356   127  3997 [m
+[31m-[m
+[31m---- cmsdkya0 ---[m
+[31m-var_numeric[m
+[31m-   -9    -8    -1     1     2     3     4  <NA> [m
+[31m-    1     2   470   160  2479 12018   116  3997 [m
+[31m-[m
+[31m---- cmsdvha0 ---[m
+[31m-var_numeric[m
+[31m-  -9   -8   -1    1    2    3    4 <NA> [m
+[31m-   1    3  470  349 4337 9826  260 3997 [m
+[31m-[m
+[31m---- cmsdtea0 ---[m
+[31m-var_numeric[m
+[31m-  -9   -8   -1    1    2    3    4 <NA> [m
+[31m-   2    5  470 1338 7502 5615  314 3997 [m
+[31m-[m
+[31m---- cmsdora0 ---[m
+[31m-var_numeric[m
+[31m-  -9   -8   -1    1    2    3    4 <NA> [m
+[31m-   1    2  470  574 6082 8012  105 3997 [m
+[31m-[m
+[31m---- cmsdspa0 ---[m
+[31m-var_numeric[m
+[31m-   -9    -8    -1     1     2     3     4  <NA> [m
+[31m-    1     2   470 10188  3588   823   174  3997 [m
+[31m-[m
+[31m---- cmsddca0 ---[m
+[31m-var_numeric[m
+[31m-  -9   -8   -1    1    2    3    4 <NA> [m
+[31m-   1    2  470 6576 6040 1860  297 3997 [m
+[31m-[m
+[31m---- cmsdgba0 ---[m
+[31m-var_numeric[m
+[31m-  -9   -8   -1    1    2    3    4 <NA> [m
+[31m-   2    8  470 9243 3362  861 1300 3997 [m
+[31m-[m
+[31m---- cmsdtta0 ---[m
+[31m-var_numeric[m
+[31m-  -9   -8   -1    1    2    3    4 <NA> [m
+[31m-   1    2  470 7344 5263 2016  150 3997 [m
+[31m-[m
+[31m---- cmsdmwa0 ---[m
+[31m-var_numeric[m
+[31m-   -9    -8    -1     1     2     3     4  <NA> [m
+[31m-    1     2   470 12572  1660   282   259  3997 [m
+[31m-[m
+[31m---- cmsduda0 ---[m
+[31m-var_numeric[m
+[31m-   -9    -8    -1     1     2     3     4  <NA> [m
+[31m-    1     2   470 13213  1202   231   127  3997 [m
+[31m-[m
+[31m---- cmsdnca0 ---[m
+[31m-var_numeric[m
+[31m-  -9   -8   -1    1    2    3    4 <NA> [m
+[31m-   1    2  470 7752 5296 1510  215 3997 [m
+[31m-[m
+[31m---- cmsdfea0 ---[m
+[31m-var_numeric[m
+[31m-   -9    -8    -1     1     2     3     4  <NA> [m
+[31m-    2     3   470 10337  3489   673   272  3997 [m
+[31m-[m
+[31m---- cmsdpba0 ---[m
+[31m-var_numeric[m
+[31m-   -9    -8    -1     1     2     3     4  <NA> [m
+[31m-    1     6   470 12124  1684   300   661  3997 [m
+[31m-[m
+[31m---- cmsdfsa0 ---[m
+[31m-var_numeric[m
+[31m-  -9   -8   -1    1    2    3    4 <NA> [m
+[31m-   1    3  470 9173 3907 1416  276 3997 [m
+[31m-[m
+[31m---- cmsdoaa0 ---[m
+[31m-var_numeric[m
+[31m-   -9    -8    -1     1     2     3     4  <NA> [m
+[31m-    1     2   470 11289  2873   332   279  3997 [m
+[31m-[m
+[31m-=== STANDARDIZING ORIGINALLY REVERSE-CODED VARIABLES ===[m
+[31m-✓ Standardized: cmsdsta0 -> sc5_think_act (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: cmsdgfa0 -> sc5_good_friend (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: cmsdlca0 -> sc5_liked_children (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: cmsdpfa0 -> sc5_considerate (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: cmsdsra0 -> sc5_sharing (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: cmsdhua0 -> sc5_helpful (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: cmsdkya0 -> sc5_kind_younger (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: cmsdvha0 -> sc5_volunteer_help (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: cmsdtea0 -> sc5_task_completion (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: cmsdora0 -> sc5_obedient (0-2 scale, higher = higher self-control)[m
+[31m-[m
+[31m-=== STANDARDIZING ORIGINALLY NORMAL-CODED VARIABLES ===[m
+[31m-✓ Standardized: cmsdspa0 -> sc5_solitary (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: cmsddca0 -> sc5_distracted (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: cmsdgba0 -> sc5_better_adults (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: cmsdtta0 -> sc5_temper (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: cmsdmwa0 -> sc5_worries (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: cmsduda0 -> sc5_unhappy (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: cmsdnca0 -> sc5_nervous (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: cmsdfea0 -> sc5_fears (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: cmsdpba0 -> sc5_restless (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: cmsdfsa0 -> sc5_fidgeting (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: cmsdoaa0 -> sc5_lying (0-2 scale, higher = higher self-control)[m
+[31m-[m
+[31m-=== RECODED VARIABLE DISTRIBUTIONS ===[m
+[31m-Successfully recoded variables (21):[m
+[31m-[m
+[31m---- sc5_think_act ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1665 9352 3209 5017 [m
+[31m-[m
+[31m---- sc5_good_friend ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  318  1400 12870  4655 [m
+[31m-[m
+[31m---- sc5_liked_children ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-   97  1780 12771  4595 [m
+[31m-[m
+[31m---- sc5_considerate ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 397 5164 9011 4671 [m
+[31m-[m
+[31m---- sc5_sharing ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 421 5503 8793 4526 [m
+[31m-[m
+[31m---- sc5_helpful ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  258  3032 11356  4597 [m
+[31m-[m
+[31m---- sc5_kind_younger ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  160  2479 12018  4586 [m
+[31m-[m
+[31m---- sc5_volunteer_help ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 349 4337 9826 4731 [m
+[31m-[m
+[31m---- sc5_task_completion ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1338 7502 5615 4788 [m
+[31m-[m
+[31m---- sc5_obedient ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 574 6082 8012 4575 [m
+[31m-[m
+[31m---- sc5_solitary ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  823  3588 10188  4644 [m
+[31m-[m
+[31m---- sc5_distracted ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1860 6040 6576 4767 [m
+[31m-[m
+[31m---- sc5_better_adults ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 861 3362 9243 5777 [m
+[31m-[m
+[31m---- sc5_temper ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-2016 5263 7344 4620 [m
+[31m-[m
+[31m---- sc5_worries ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  282  1660 12572  4729 [m
+[31m-[m
+[31m---- sc5_unhappy ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  231  1202 13213  4597 [m
+[31m-[m
+[31m---- sc5_nervous ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1510 5296 7752 4685 [m
+[31m-[m
+[31m---- sc5_fears ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  673  3489 10337  4744 [m
+[31m-[m
+[31m---- sc5_restless ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  300  1684 12124  5135 [m
+[31m-[m
+[31m---- sc5_fidgeting ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1416 3907 9173 4747 [m
+[31m-[m
+[31m---- sc5_lying ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  332  2873 11289  4749 [m
+[31m-[m
+[31m-[m
+[31m-=== PROCESSING SUMMARY ===[m
+[31m-Original variables found: 21 / 21 [m
+[31m-Originally reverse-coded variables (now standardized): 10 (10 total)[m
+[31m-Originally normal-coded variables (now reverse-coded): 11 (11 total)[m
+[31m-Successfully processed variables: 21 [m
+[31m-[m
+[31m-=== VARIABLE MAPPING ===[m
+[31m-Originally reverse-coded variables (now standardized to 0-2 scale):[m
+[31m-   Original                 New                       Description[m
+[31m-1  cmsdsta0       sc5_think_act    Think things out before acting[m
+[31m-2  cmsdgfa0     sc5_good_friend   Having at least one good friend[m
+[31m-3  cmsdlca0  sc5_liked_children Generally liked by other children[m
+[31m-4  cmsdpfa0     sc5_considerate     Being considerate of feelings[m
+[31m-5  cmsdsra0         sc5_sharing     Sharing readily with children[m
+[31m-6  cmsdhua0         sc5_helpful     Being helpful if someone hurt[m
+[31m-7  cmsdkya0    sc5_kind_younger    Being kind to younger children[m
+[31m-8  cmsdvha0  sc5_volunteer_help Often volunteering to help others[m
+[31m-9  cmsdtea0 sc5_task_completion         Sees tasks through to end[m
+[31m-10 cmsdora0        sc5_obedient                Generally obedient[m
+[31m-[m
+[31m-Originally normal-coded variables (now reverse-coded to 0-2 scale):[m
+[31m-   Original               New                   Description[m
+[31m-1  cmsdspa0      sc5_solitary         Being rather solitary[m
+[31m-2  cmsddca0    sc5_distracted             Easily distracted[m
+[31m-3  cmsdgba0 sc5_better_adults Getting on better with adults[m
+[31m-4  cmsdtta0        sc5_temper     Often has temper tantrums[m
+[31m-5  cmsdmwa0       sc5_worries           Having many worries[m
+[31m-6  cmsduda0       sc5_unhappy         Often unhappy/tearful[m
+[31m-7  cmsdnca0       sc5_nervous     Nervous in new situations[m
+[31m-8  cmsdfea0         sc5_fears             Having many fears[m
+[31m-9  cmsdpba0      sc5_restless           Restless/overactive[m
+[31m-10 cmsdfsa0     sc5_fidgeting          Constantly fidgeting[m
+[31m-11 cmsdoaa0         sc5_lying             Lying or cheating[m
+[31m-[m
+[31m-Note: All age 5 self-control variables are now processed.[m
+[31m-All recoded variables have prefix 'sc5_' to distinguish from other age variables.[m
+[31m-All values other than 1, 2, or 3 are coded as missing (NA).[m
+[31m-STANDARDIZED CODING: All variables use 0-2 scale where HIGHER values = HIGHER self-control.[m
+[31m-Originally reverse-coded variables: 1->0, 2->1, 3->2[m
+[31m-Originally normal-coded variables: 1->2, 2->1, 3->0 (reverse-coded for consistency)[m
+[31m-[m
+[31m-✓ Completed processing for age 5 [m
+[31m-[m
+[31m-Processing age 7 ...[m
+[31m-[m
+[31m-=== SELF-CONTROL VARIABLES PROCESSING (AGE 7) ===[m
+[31m-Using prefix: 'dmsd' -> output prefix: 'sc7_'[m
+[31m-[m
+[31m-Variables requiring reverse coding: 10 [m
+[31m-Variables with normal coding: 11 [m
+[31m-Total variables to process: 21 [m
+[31m-[m
+[31m-=== VARIABLE AVAILABILITY ===[m
+[31m-Found variables (21/21): dmsdsta0, dmsdgfa0, dmsdlca0, dmsdpfa0, dmsdsra0, dmsdhua0, dmsdkya0, dmsdvha0, dmsdtea0, dmsdora0, dmsdspa0, dmsddca0, dmsdgba0, dmsdtta0, dmsdmwa0, dmsduda0, dmsdnca0, dmsdfea0, dmsdpba0, dmsdfsa0, dmsdoaa0[m
+[31m-[m
+[31m-=== ORIGINAL VARIABLE DISTRIBUTIONS ===[m
+[31m-[m
+[31m---- dmsdsta0 ---[m
+[31m-var_numeric[m
+[31m-  -9   -8   -1    1    2    3    4 <NA> [m
+[31m-   2    4  366 1496 8218 3486  285 5386 [m
+[31m-[m
+[31m---- dmsdgfa0 ---[m
+[31m-var_numeric[m
+[31m-   -9    -8    -1     1     2     3     4  <NA> [m
+[31m-    1     1   366   270  1154 11940   125  5386 [m
+[31m-[m
+[31m---- dmsdlca0 ---[m
+[31m-var_numeric[m
+[31m-   -9    -8    -1     1     2     3     4  <NA> [m
+[31m-    2     1   366    99  1799 11484   106  5386 [m
+[31m-[m
+[31m---- dmsdpfa0 ---[m
+[31m-var_numeric[m
+[31m-  -9   -8   -1    1    2    3    4 <NA> [m
+[31m-   1    2  366  289 3931 9165  103 5386 [m
+[31m-[m
+[31m---- dmsdsra0 ---[m
+[31m-var_numeric[m
+[31m-  -9   -8   -1    1    2    3    4 <NA> [m
+[31m-   1    1  366  321 4264 8847   57 5386 [m
+[31m-[m
+[31m---- dmsdhua0 ---[m
+[31m-var_numeric[m
+[31m-   -9    -8    -1     1     2     3     4  <NA> [m
+[31m-    1     1   366   235  2415 10768    71  5386 [m
+[31m-[m
+[31m---- dmsdkya0 ---[m
+[31m-var_numeric[m
+[31m-   -9    -8    -1     1     2     3     4  <NA> [m
+[31m-    2     1   366   125  1870 11438    55  5386 [m
+[31m-[m
+[31m---- dmsdvha0 ---[m
+[31m-var_numeric[m
+[31m-  -9   -8   -1    1    2    3    4 <NA> [m
+[31m-   2    2  366  296 3977 9039  175 5386 [m
+[31m-[m
+[31m---- dmsdtea0 ---[m
+[31m-var_numeric[m
+[31m-  -9   -8   -1    1    2    3    4 <NA> [m
+[31m-   2    4  366 1472 6420 5358  235 5386 [m
+[31m-[m
+[31m---- dmsdora0 ---[m
+[31m-var_numeric[m
+[31m-  -9   -8   -1    1    2    3    4 <NA> [m
+[31m-   1    1  366  467 4934 8016   72 5386 [m
+[31m-[m
+[31m---- dmsdspa0 ---[m
+[31m-var_numeric[m
+[31m-  -9   -8   -1    1    2    3    4 <NA> [m
+[31m-   1    1  366 9567 3033  749  140 5386 [m
+[31m-[m
+[31m---- dmsddca0 ---[m
+[31m-var_numeric[m
+[31m-  -9   -8   -1    1    2    3    4 <NA> [m
+[31m-   2    1  366 5734 5404 2167  183 5386 [m
+[31m-[m
+[31m---- dmsdgba0 ---[m
+[31m-var_numeric[m
+[31m-  -9   -8   -1    1    2    3    4 <NA> [m
+[31m-   2    2  366 8705 2989  808  985 5386 [m
+[31m-[m
+[31m---- dmsdtta0 ---[m
+[31m-var_numeric[m
+[31m-  -9   -8   -1    1    2    3    4 <NA> [m
+[31m-   1    2  366 7357 4322 1693  116 5386 [m
+[31m-[m
+[31m---- dmsdmwa0 ---[m
+[31m-var_numeric[m
+[31m-   -9    -8    -1     1     2     3     4  <NA> [m
+[31m-    1     1   366 10267  2502   491   229  5386 [m
+[31m-[m
+[31m---- dmsduda0 ---[m
+[31m-var_numeric[m
+[31m-   -9    -8    -1     1     2     3     4  <NA> [m
+[31m-    1     1   366 11663  1390   313   123  5386 [m
+[31m-[m
+[31m---- dmsdnca0 ---[m
+[31m-var_numeric[m
+[31m-  -9   -8   -1    1    2    3    4 <NA> [m
+[31m-   2    1  366 7572 4460 1284  172 5386 [m
+[31m-[m
+[31m---- dmsdfea0 ---[m
+[31m-var_numeric[m
+[31m-  -9   -8   -1    1    2    3    4 <NA> [m
+[31m-   2    1  366 9399 3197  658  234 5386 [m
+[31m-[m
+[31m---- dmsdpba0 ---[m
+[31m-var_numeric[m
+[31m-   -9    -8    -1     1     2     3     4  <NA> [m
+[31m-    2     2   366 10246  2329   425   487  5386 [m
+[31m-[m
+[31m---- dmsdfsa0 ---[m
+[31m-var_numeric[m
+[31m-  -9   -8   -1    1    2    3    4 <NA> [m
+[31m-   1    2  366 8195 3600 1496  197 5386 [m
+[31m-[m
+[31m---- dmsdoaa0 ---[m
+[31m-var_numeric[m
+[31m-   -9    -8    -1     1     2     3     4  <NA> [m
+[31m-    2     1   366 10324  2613   340   211  5386 [m
+[31m-[m
+[31m-=== STANDARDIZING ORIGINALLY REVERSE-CODED VARIABLES ===[m
+[31m-✓ Standardized: dmsdsta0 -> sc7_think_act (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: dmsdgfa0 -> sc7_good_friend (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: dmsdlca0 -> sc7_liked_children (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: dmsdpfa0 -> sc7_considerate (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: dmsdsra0 -> sc7_sharing (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: dmsdhua0 -> sc7_helpful (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: dmsdkya0 -> sc7_kind_younger (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: dmsdvha0 -> sc7_volunteer_help (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: dmsdtea0 -> sc7_task_completion (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: dmsdora0 -> sc7_obedient (0-2 scale, higher = higher self-control)[m
+[31m-[m
+[31m-=== STANDARDIZING ORIGINALLY NORMAL-CODED VARIABLES ===[m
+[31m-✓ Standardized: dmsdspa0 -> sc7_solitary (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: dmsddca0 -> sc7_distracted (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: dmsdgba0 -> sc7_better_adults (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: dmsdtta0 -> sc7_temper (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: dmsdmwa0 -> sc7_worries (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: dmsduda0 -> sc7_unhappy (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: dmsdnca0 -> sc7_nervous (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: dmsdfea0 -> sc7_fears (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: dmsdpba0 -> sc7_restless (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: dmsdfsa0 -> sc7_fidgeting (0-2 scale, higher = higher self-control)[m
+[31m-✓ Standardized: dmsdoaa0 -> sc7_lying (0-2 scale, higher = higher self-control)[m
+[31m-[m
+[31m-=== RECODED VARIABLE DISTRIBUTIONS ===[m
+[31m-Successfully recoded variables (21):[m
+[31m-[m
+[31m---- sc7_think_act ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1496 8218 3486 6043 [m
+[31m-[m
+[31m---- sc7_good_friend ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  270  1154 11940  5879 [m
+[31m-[m
+[31m---- sc7_liked_children ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-   99  1799 11484  5861 [m
+[31m-[m
+[31m---- sc7_considerate ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 289 3931 9165 5858 [m
+[31m-[m
+[31m---- sc7_sharing ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 321 4264 8847 5811 [m
+[31m-[m
+[31m---- sc7_helpful ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  235  2415 10768  5825 [m
+[31m-[m
+[31m---- sc7_kind_younger ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  125  1870 11438  5810 [m
+[31m-[m
+[31m---- sc7_volunteer_help ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 296 3977 9039 5931 [m
+[31m-[m
+[31m---- sc7_task_completion ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1472 6420 5358 5993 [m
+[31m-[m
+[31m---- sc7_obedient ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 467 4934 8016 5826 [m
+[31m-[m
+[31m---- sc7_solitary ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 749 3033 9567 5894 [m
+[31m-[m
+[31m---- sc7_distracted ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-2167 5404 5734 5938 [m
+[31m-[m
+[31m---- sc7_better_adults ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 808 2989 8705 6741 [m
+[31m-[m
+[31m---- sc7_temper ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1693 4322 7357 5871 [m
+[31m-[m
+[31m---- sc7_worries ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  491  2502 10267  5983 [m
+[31m-[m
+[31m---- sc7_unhappy ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  313  1390 11663  5877 [m
+[31m-[m
+[31m---- sc7_nervous ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1284 4460 7572 5927 [m
+[31m-[m
+[31m---- sc7_fears ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 658 3197 9399 5989 [m
+[31m-[m
+[31m---- sc7_restless ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  425  2329 10246  6243 [m
+[31m-[m
+[31m---- sc7_fidgeting ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1496 3600 8195 5952 [m
+[31m-[m
+[31m---- sc7_lying ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  340  2613 10324  5966 [m
+[31m-[m
+[31m-[m
+[31m-=== PROCESSING SUMMARY ===[m
+[31m-Original variables found: 21 / 21 [m
+[31m-Originally reverse-coded variables (now standardized): 10 (10 total)[m
+[31m-Originally normal-coded variables (now reverse-coded): 11 (11 total)[m
+[31m-Successfully processed variables: 21 [m
+[31m-[m
+[31m-=== VARIABLE MAPPING ===[m
+[31m-Originally reverse-coded variables (now standardized to 0-2 scale):[m
+[31m-   Original                 New                       Description[m
+[31m-1  dmsdsta0       sc7_think_act    Think things out before acting[m
+[31m-2  dmsdgfa0     sc7_good_friend   Having at least one good friend[m
+[31m-3  dmsdlca0  sc7_liked_children Generally liked by other children[m
+[31m-4  dmsdpfa0     sc7_considerate     Being considerate of feelings[m
+[31m-5  dmsdsra0         sc7_sharing     Sharing readily with children[m
+[31m-6  dmsdhua0         sc7_helpful     Being helpful if someone hurt[m
+[31m-7  dmsdkya0    sc7_kind_younger    Being kind to younger children[m
+[31m-8  dmsdvha0  sc7_volunteer_help Often volunteering to help others[m
+[31m-9  dmsdtea0 sc7_task_completion         Sees tasks through to end[m
+[31m-10 dmsdora0        sc7_obedient                Generally obedient[m
+[31m-[m
+[31m-Originally normal-coded variables (now reverse-coded to 0-2 scale):[m
+[31m-   Original               New                   Description[m
+[31m-1  dmsdspa0      sc7_solitary         Being rather solitary[m
+[31m-2  dmsddca0    sc7_distracted             Easily distracted[m
+[31m-3  dmsdgba0 sc7_better_adults Getting on better with adults[m
+[31m-4  dmsdtta0        sc7_temper     Often has temper tantrums[m
+[31m-5  dmsdmwa0       sc7_worries           Having many worries[m
+[31m-6  dmsduda0       sc7_unhappy         Often unhappy/tearful[m
+[31m-7  dmsdnca0       sc7_nervous     Nervous in new situations[m
+[31m-8  dmsdfea0         sc7_fears             Having many fears[m
+[31m-9  dmsdpba0      sc7_restless           Restless/overactive[m
+[31m-10 dmsdfsa0     sc7_fidgeting          Constantly fidgeting[m
+[31m-11 dmsdoaa0         sc7_lying             Lying or cheating[m
+[31m-[m
+[31m-Note: All age 7 self-control variables are now processed.[m
+[31m-All recoded variables have prefix 'sc7_' to distinguish from other age variables.[m
+[31m-All values other than 1, 2, or 3 are coded as missing (NA).[m
+[31m-STANDARDIZED CODING: All variables use 0-2 scale where HIGHER values = HIGHER self-control.[m
+[31m-Originally reverse-coded variables: 1->0, 2->1, 3->2[m
+[31m-Originally normal-coded variables: 1->2, 2->1, 3->0 (reverse-coded for consistency)[m
+[31m-[m
+[31m-✓ Completed processing for age 7 [m
+[31m-[m
+[31m-Processing age 11 ...[m
+[31m-[m
+[31m-=== SELF-CONTROL VARIABLES PROCESSING (AGE 11) ===[m
+[31m-Using prefix: 'epsd' -> output prefix: 'sc11_'[m
+[31m-[m
+[31m-Variables requiring reverse coding: 10 [m
+[31m-Variables with normal coding: 11 [m
+[31m-Total variables to process: 21 [m
+[31m-[m
+[31m-=== VARIABLE AVAILABILITY ===[m
+[31m-Found variables (0/21): [m
+[31m-Missing variables (21): epsdsta0, epsdgfa0, epsdlca0, epsdpfa0, epsdsra0, epsdhua0, epsdkya0, epsdvha0, epsdtea0, epsdora0, epsdspa0, epsddca0, epsdgba0, epsdtta0, epsdmwa0, epsduda0, epsdnca0, epsdfea0, epsdpba0, epsdfsa0, epsdoaa0[m
+[31m-[m
+[31m-=== STANDARDIZING ORIGINALLY REVERSE-CODED VARIABLES ===[m
+[31m-[m
+[31m-=== STANDARDIZING ORIGINALLY NORMAL-CODED VARIABLES ===[m
+[31m-[m
+[31m-=== RECODED VARIABLE DISTRIBUTIONS ===[m
+[31m-Successfully recoded variables (21):[m
+[31m-[m
+[31m---- sc11_think_act ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1359 6713 3666 7505 [m
+[31m-[m
+[31m---- sc11_good_friend ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  283  1022 10527  7411 [m
+[31m-[m
+[31m---- sc11_liked_children ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  130  1587 10111  7415 [m
+[31m-[m
+[31m---- sc11_considerate ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 370 2453 8971 7449 [m
+[31m-[m
+[31m---- sc11_sharing ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 358 2458 9031 7396 [m
+[31m-[m
+[31m---- sc11_helpful ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 221 1724 9899 7399 [m
+[31m-[m
+[31m---- sc11_kind_younger ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  123  1228 10506  7386 [m
+[31m-[m
+[31m---- sc11_volunteer_help ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 347 3589 7872 7435 [m
+[31m-[m
+[31m---- sc11_task_completion ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1425 5513 4817 7488 [m
+[31m-[m
+[31m---- sc11_obedient ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 498 4093 7247 7405 [m
+[31m-[m
+[31m---- sc11_solitary ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 676 2828 8328 7411 [m
+[31m-[m
+[31m---- sc11_distracted ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1756 4696 5347 7444 [m
+[31m-[m
+[31m---- sc11_better_adults ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 863 3129 7545 7706 [m
+[31m-[m
+[31m---- sc11_temper ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1681 4026 6116 7420 [m
+[31m-[m
+[31m---- sc11_worries ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 764 3663 7361 7455 [m
+[31m-[m
+[31m---- sc11_unhappy ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 305 1679 9823 7436 [m
+[31m-[m
+[31m---- sc11_nervous ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 941 3728 7147 7427 [m
+[31m-[m
+[31m---- sc11_fears ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 613 2978 8192 7460 [m
+[31m-[m
+[31m---- sc11_restless ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 557 2383 8744 7559 [m
+[31m-[m
+[31m---- sc11_fidgeting ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 951 2548 8256 7488 [m
+[31m-[m
+[31m---- sc11_lying ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 247 1891 9626 7479 [m
+[31m-[m
+[31m-[m
+[31m-=== PROCESSING SUMMARY ===[m
+[31m-Original variables found: 0 / 21 [m
+[31m-Originally reverse-coded variables (now standardized): 10 (10 total)[m
+[31m-Originally normal-coded variables (now reverse-coded): 11 (11 total)[m
+[31m-Successfully processed variables: 21 [m
+[31m-[m
+[31m-Missing variables that need to be checked:[m
+[31m--  epsdsta0 [m
+[31m--  epsdgfa0 [m
+[31m--  epsdlca0 [m
+[31m--  epsdpfa0 [m
+[31m--  epsdsra0 [m
+[31m--  epsdhua0 [m
+[31m--  epsdkya0 [m
+[31m--  epsdvha0 [m
+[31m--  epsdtea0 [m
+[31m--  epsdora0 [m
+[31m--  epsdspa0 [m
+[31m--  epsddca0 [m
+[31m--  epsdgba0 [m
+[31m--  epsdtta0 [m
+[31m--  epsdmwa0 [m
+[31m--  epsduda0 [m
+[31m--  epsdnca0 [m
+[31m--  epsdfea0 [m
+[31m--  epsdpba0 [m
+[31m--  epsdfsa0 [m
+[31m--  epsdoaa0 [m
+[31m-[m
+[31m-=== VARIABLE MAPPING ===[m
+[31m-Originally reverse-coded variables (now standardized to 0-2 scale):[m
+[31m-   Original                  New                       Description[m
+[31m-1  epsdsta0       sc11_think_act    Think things out before acting[m
+[31m-2  epsdgfa0     sc11_good_friend   Having at least one good friend[m
+[31m-3  epsdlca0  sc11_liked_children Generally liked by other children[m
+[31m-4  epsdpfa0     sc11_considerate     Being considerate of feelings[m
+[31m-5  epsdsra0         sc11_sharing     Sharing readily with children[m
+[31m-6  epsdhua0         sc11_helpful     Being helpful if someone hurt[m
+[31m-7  epsdkya0    sc11_kind_younger    Being kind to younger children[m
+[31m-8  epsdvha0  sc11_volunteer_help Often volunteering to help others[m
+[31m-9  epsdtea0 sc11_task_completion         Sees tasks through to end[m
+[31m-10 epsdora0        sc11_obedient                Generally obedient[m
+[31m-[m
+[31m-Originally normal-coded variables (now reverse-coded to 0-2 scale):[m
+[31m-   Original                New                   Description[m
+[31m-1  epsdspa0      sc11_solitary         Being rather solitary[m
+[31m-2  epsddca0    sc11_distracted             Easily distracted[m
+[31m-3  epsdgba0 sc11_better_adults Getting on better with adults[m
+[31m-4  epsdtta0        sc11_temper     Often has temper tantrums[m
+[31m-5  epsdmwa0       sc11_worries           Having many worries[m
+[31m-6  epsduda0       sc11_unhappy         Often unhappy/tearful[m
+[31m-7  epsdnca0       sc11_nervous     Nervous in new situations[m
+[31m-8  epsdfea0         sc11_fears             Having many fears[m
+[31m-9  epsdpba0      sc11_restless           Restless/overactive[m
+[31m-10 epsdfsa0     sc11_fidgeting          Constantly fidgeting[m
+[31m-11 epsdoaa0         sc11_lying             Lying or cheating[m
+[31m-[m
+[31m-Note: All age 11 self-control variables are now processed.[m
+[31m-All recoded variables have prefix 'sc11_' to distinguish from other age variables.[m
+[31m-All values other than 1, 2, or 3 are coded as missing (NA).[m
+[31m-STANDARDIZED CODING: All variables use 0-2 scale where HIGHER values = HIGHER self-control.[m
+[31m-Originally reverse-coded variables: 1->0, 2->1, 3->2[m
+[31m-Originally normal-coded variables: 1->2, 2->1, 3->0 (reverse-coded for consistency)[m
+[31m-[m
+[31m-✓ Completed processing for age 11 [m
+[31m-[m
+[31m-Processing age 14 ...[m
+[31m-[m
+[31m-=== SELF-CONTROL VARIABLES PROCESSING (AGE 14) ===[m
+[31m-Using prefix: 'fpsd' -> output prefix: 'sc14_'[m
+[31m-[m
+[31m-Variables requiring reverse coding: 10 [m
+[31m-Variables with normal coding: 11 [m
+[31m-Total variables to process: 21 [m
+[31m-[m
+[31m-=== VARIABLE AVAILABILITY ===[m
+[31m-Found variables (0/21): [m
+[31m-Missing variables (21): fpsdsta0, fpsdgfa0, fpsdlca0, fpsdpfa0, fpsdsra0, fpsdhua0, fpsdkya0, fpsdvha0, fpsdtea0, fpsdora0, fpsdspa0, fpsddca0, fpsdgba0, fpsdtta0, fpsdmwa0, fpsduda0, fpsdnca0, fpsdfea0, fpsdpba0, fpsdfsa0, fpsdoaa0[m
+[31m-[m
+[31m-=== STANDARDIZING ORIGINALLY REVERSE-CODED VARIABLES ===[m
+[31m-[m
+[31m-=== STANDARDIZING ORIGINALLY NORMAL-CODED VARIABLES ===[m
+[31m-[m
+[31m-=== RECODED VARIABLE DISTRIBUTIONS ===[m
+[31m-Successfully recoded variables (21):[m
+[31m-[m
+[31m---- sc14_think_act ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1253 5600 3239 9151 [m
+[31m-[m
+[31m---- sc14_good_friend ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 319  974 8819 9131 [m
+[31m-[m
+[31m---- sc14_liked_children ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 187 1765 8157 9134 [m
+[31m-[m
+[31m---- sc14_considerate ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 231 3009 6893 9110 [m
+[31m-[m
+[31m---- sc14_sharing ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 417 2662 7031 9133 [m
+[31m-[m
+[31m---- sc14_helpful ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 210 1955 7973 9105 [m
+[31m-[m
+[31m---- sc14_kind_younger ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 161 1407 8556 9119 [m
+[31m-[m
+[31m---- sc14_volunteer_help ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 763 4266 5090 9124 [m
+[31m-[m
+[31m---- sc14_task_completion ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1116 4640 4377 9110 [m
+[31m-[m
+[31m---- sc14_obedient ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 491 3831 5791 9130 [m
+[31m-[m
+[31m---- sc14_solitary ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1067 3086 5950 9140 [m
+[31m-[m
+[31m---- sc14_distracted ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1540 3814 4744 9145 [m
+[31m-[m
+[31m---- sc14_better_adults ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1049 3415 5655 9124 [m
+[31m-[m
+[31m---- sc14_temper ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m-1310 3253 5548 9132 [m
+[31m-[m
+[31m---- sc14_worries ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 926 3241 5944 9132 [m
+[31m-[m
+[31m---- sc14_unhappy ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 506 1590 7995 9152 [m
+[31m-[m
+[31m---- sc14_nervous ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 940 3031 6139 9133 [m
+[31m-[m
+[31m---- sc14_fears ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 549 2190 7402 9102 [m
+[31m-[m
+[31m---- sc14_restless ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 581 1729 7780 9153 [m
+[31m-[m
+[31m---- sc14_fidgeting ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 702 1876 7489 9176 [m
+[31m-[m
+[31m---- sc14_lying ---[m
+[31m-[m
+[31m-   0    1    2 <NA> [m
+[31m- 271 1470 8368 9134 [m
+[31m-[m
+[31m-[m
+[31m-=== PROCESSING SUMMARY ===[m
+[31m-Original variables found: 0 / 21 [m
+[31m-Originally reverse-coded variables (now standardized): 10 (10 total)[m
+[31m-Originally normal-coded variables (now reverse-coded): 11 (11 total)[m
+[31m-Successfully processed variables: 21 [m
+[31m-[m
+[31m-Missing variables that need to be checked:[m
+[31m--  fpsdsta0 [m
+[31m--  fpsdgfa0 [m
+[31m--  fpsdlca0 [m
+[31m--  fpsdpfa0 [m
+[31m--  fpsdsra0 [m
+[31m--  fpsdhua0 [m
+[31m--  fpsdkya0 [m
+[31m--  fpsdvha0 [m
+[31m--  fpsdtea0 [m
+[31m--  fpsdora0 [m
+[31m--  fpsdspa0 [m
+[31m--  fpsddca0 [m
+[31m--  fpsdgba0 [m
+[31m--  fpsdtta0 [m
+[31m--  fpsdmwa0 [m
+[31m--  fpsduda0 [m
+[31m--  fpsdnca0 [m
+[31m--  fpsdfea0 [m
+[31m--  fpsdpba0 [m
+[31m--  fpsdfsa0 [m
+[31m--  fpsdoaa0 [m
+[31m-[m
+[31m-=== VARIABLE MAPPING ===[m
+[31m-Originally reverse-coded variables (now standardized to 0-2 scale):[m
+[31m-   Original                  New                       Description[m
+[31m-1  fpsdsta0       sc14_think_act    Think things out before acting[m
+[31m-2  fpsdgfa0     sc14_good_friend   Having at least one good friend[m
+[31m-3  fpsdlca0  sc14_liked_children Generally liked by other children[m
+[31m-4  fpsdpfa0     sc14_considerate     Being considerate of feelings[m
+[31m-5  fpsdsra0         sc14_sharing     Sharing readily with children[m
+[31m-6  fpsdhua0         sc14_helpful     Being helpful if someone hurt[m
+[31m-7  fpsdkya0    sc14_kind_younger    Being kind to younger children[m
+[31m-8  fpsdvha0  sc14_volunteer_help Often volunteering to help others[m
+[31m-9  fpsdtea0 sc14_task_completion         Sees tasks through to end[m
+[31m-10 fpsdora0        sc14_obedient                Generally obedient[m
+[31m-[m
+[31m-Originally normal-coded variables (now reverse-coded to 0-2 scale):[m
+[31m-   Original                New                   Description[m
+[31m-1  fpsdspa0      sc14_solitary         Being rather solitary[m
+[31m-2  fpsddca0    sc14_distracted             Easily distracted[m
+[31m-3  fpsdgba0 sc14_better_adults Getting on better with adults[m
+[31m-4  fpsdtta0        sc14_temper     Often has temper tantrums[m
+[31m-5  fpsdmwa0       sc14_worries           Having many worries[m
+[31m-6  fpsduda0       sc14_unhappy         Often unhappy/tearful[m
+[31m-7  fpsdnca0       sc14_nervous     Nervous in new situations[m
+[31m-8  fpsdfea0         sc14_fears             Having many fears[m
+[31m-9  fpsdpba0      sc14_restless           Restless/overactive[m
+[31m-10 fpsdfsa0     sc14_fidgeting          Constantly fidgeting[m
+[31m-11 fpsdoaa0         sc14_lying             Lying or cheating[m
+[31m-[m
+[31m-Note: All age 14 self-control variables are now processed.[m
+[31m-All recoded variables have prefix 'sc14_' to distinguish from other age variables.[m
+[31m-All values other than 1, 2, or 3 are coded as missing (NA).[m
+[31m-STANDARDIZED CODING: All variables use 0-2 scale where HIGHER values = HIGHER self-control.[m
+[31m-Originally reverse-coded variables: 1->0, 2->1, 3->2[m
+[31m-Originally normal-coded variables: 1->2, 2->1, 3->0 (reverse-coded for consistency)[m
+[31m-[m
+[31m-✓ Completed processing for age 14 [m
+[31m-[m
+[31m-Processing age 17 ...[m
+[31m-[m
+[31m-=== SELF-CONTROL VARIABLES PROCESSING (AGE 17) ===[m
+[31m-Using prefix: 'gpsd' -> output prefix: 'sc17_'[m
+[31m-[m
+[31m-Variables requiring reverse coding: 10 [m
+[31m-Variables with normal coding: 11 [m
+[31m-Total variables to process: 21 [m
+[31m-[m
+[31m-=== VARIABLE AVAILABILITY ===[m
+[31m-Found variables (0/21): [m
+[31m-Missing variables (21): gpsdsta0, gpsdgfa0, gpsdlca0, gpsdpfa0, gpsdsra0, gpsdhua0, gpsdkya0, gpsdvha0, gpsdtea0, gpsdora0, gpsdspa0, gpsddca0, gpsdgba0, gpsdtta0, gpsdmwa0, gpsduda0, gpsdnca0, gpsdfea0, gpsdpba0, gpsdfsa0, gpsdoaa0[m
+[31m-[m
+[31m-=== STANDARDIZING ORIGINALLY REVERSE-CODED VARIABLES ===[m
+[31m-[m
+[31m-=== STANDARDIZING ORIGINALLY NORMAL-CODED VARIABLES ===[m
+[31m-[m
+[31m-=== RECODED VARIABLE DISTRIBUTIONS ===[m
+[31m-Successfully recoded variables (21):[m
+[31m-[m
+[31m---- sc17_think_act ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  723  3842  3147 11531 [m
+[31m-[m
+[31m---- sc17_good_friend ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  285   823  6622 11513 [m
+[31m-[m
+[31m---- sc17_liked_children ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  148  1326  6238 11531 [m
+[31m-[m
+[31m---- sc17_considerate ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  138  1993  5613 11499 [m
+[31m-[m
+[31m---- sc17_sharing ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  351  1730  5569 11593 [m
+[31m-[m
+[31m---- sc17_helpful ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  185  1417  6131 11510 [m
+[31m-[m
+[31m---- sc17_kind_younger ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  108   883  6732 11520 [m
+[31m-[m
+[31m---- sc17_volunteer_help ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  671  3046  4008 11518 [m
+[31m-[m
+[31m---- sc17_task_completion ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  767  3133  3824 11519 [m
+[31m-[m
+[31m---- sc17_obedient ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  378  2692  4640 11533 [m
+[31m-[m
+[31m---- sc17_solitary ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  839  2188  4646 11570 [m
+[31m-[m
+[31m---- sc17_distracted ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  881  2550  4269 11543 [m
+[31m-[m
+[31m---- sc17_better_adults ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m- 1103  2896  3699 11545 [m
+[31m-[m
+[31m---- sc17_temper ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  707  2039  4948 11549 [m
+[31m-[m
+[31m---- sc17_worries ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  881  2633  4187 11542 [m
+[31m-[m
+[31m---- sc17_unhappy ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  429  1340  5916 11558 [m
+[31m-[m
+[31m---- sc17_nervous ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  749  2117  4846 11531 [m
+[31m-[m
+[31m---- sc17_fears ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  425  1527  5766 11525 [m
+[31m-[m
+[31m---- sc17_restless ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  317   872  6501 11553 [m
+[31m-[m
+[31m---- sc17_fidgeting ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  419  1127  6131 11566 [m
+[31m-[m
+[31m---- sc17_lying ---[m
+[31m-[m
+[31m-    0     1     2  <NA> [m
+[31m-  182   798  6748 11515 [m
+[31m-[m
+[31m-[m
+[31m-=== PROCESSING SUMMARY ===[m
+[31m-Original variables found: 0 / 21 [m
+[31m-Originally reverse-coded variables (now standardized): 10 (10 total)[m
+[31m-Originally normal-coded variables (now reverse-coded): 11 (11 total)[m
+[31m-Successfully processed variables: 21 [m
+[31m-[m
+[31m-Missing variables that need to be checked:[m
+[31m--  gpsdsta0 [m
+[31m--  gpsdgfa0 [m
+[31m--  gpsdlca0 [m
+[31m--  gpsdpfa0 [m
+[31m--  gpsdsra0 [m
+[31m--  gpsdhua0 [m
+[31m--  gpsdkya0 [m
+[31m--  gpsdvha0 [m
+[31m--  gpsdtea0 [m
+[31m--  gpsdora0 [m
+[31m--  gpsdspa0 [m
+[31m--  gpsddca0 [m
+[31m--  gpsdgba0 [m
+[31m--  gpsdtta0 [m
+[31m--  gpsdmwa0 [m
+[31m--  gpsduda0 [m
+[31m--  gpsdnca0 [m
+[31m--  gpsdfea0 [m
+[31m--  gpsdpba0 [m
+[31m--  gpsdfsa0 [m
+[31m--  gpsdoaa0 [m
+[31m-[m
+[31m-=== VARIABLE MAPPING ===[m
+[31m-Originally reverse-coded variables (now standardized to 0-2 scale):[m
+[31m-   Original                  New                       Description[m
+[31m-1  gpsdsta0       sc17_think_act    Think things out before acting[m
+[31m-2  gpsdgfa0     sc17_good_friend   Having at least one good friend[m
+[31m-3  gpsdlca0  sc17_liked_children Generally liked by other children[m
+[31m-4  gpsdpfa0     sc17_considerate     Being considerate of feelings[m
+[31m-5  gpsdsra0         sc17_sharing     Sharing readily with children[m
+[31m-6  gpsdhua0         sc17_helpful     Being helpful if someone hurt[m
+[31m-7  gpsdkya0    sc17_kind_younger    Being kind to younger children[m
+[31m-8  gpsdvha0  sc17_volunteer_help Often volunteering to help others[m
+[31m-9  gpsdtea0 sc17_task_completion         Sees tasks through to end[m
+[31m-10 gpsdora0        sc17_obedient                Generally obedient[m
+[31m-[m
+[31m-Originally normal-coded variables (now reverse-coded to 0-2 scale):[m
+[31m-   Original                New                   Description[m
+[31m-1  gpsdspa0      sc17_solitary         Being rather solitary[m
+[31m-2  gpsddca0    sc17_distracted             Easily distracted[m
+[31m-3  gpsdgba0 sc17_better_adults Getting on better with adults[m
+[31m-4  gpsdtta0        sc17_temper     Often has temper tantrums[m
+[31m-5  gpsdmwa0       sc17_worries           Having many worries[m
+[31m-6  gpsduda0       sc17_unhappy         Often unhappy/tearful[m
+[31m-7  gpsdnca0       sc17_nervous     Nervous in new situations[m
+[31m-8  gpsdfea0         sc17_fears             Having many fears[m
+[31m-9  gpsdpba0      sc17_restless           Restless/overactive[m
+[31m-10 gpsdfsa0     sc17_fidgeting          Constantly fidgeting[m
+[31m-11 gpsdoaa0         sc17_lying             Lying or cheating[m
+[31m-[m
+[31m-Note: All age 17 self-control variables are now processed.[m
+[31m-All recoded variables have prefix 'sc17_' to distinguish from other age variables.[m
+[31m-All values other than 1, 2, or 3 are coded as missing (NA).[m
+[31m-STANDARDIZED CODING: All variables use 0-2 scale where HIGHER values = HIGHER self-control.[m
+[31m-Originally reverse-coded variables: 1->0, 2->1, 3->2[m
+[31m-Originally normal-coded variables: 1->2, 2->1, 3->0 (reverse-coded for consistency)[m
+[31m-[m
+[31m-✓ Completed processing for age 17 [m
+[31m-[m
+[31m-=== MASTER SCRIPT COMPLETION SUMMARY ===[m
+[31m-Successfully processed self-control variables for ages: 3, 5, 7, 11, 14, 17 [m
+[31m-[m
+[31m-Total new self-control variables created: 126 [m
+[31m-Age 3 variables: 21 [m
+[31m-Age 5 variables: 21 [m
+[31m-Age 7 variables: 21 [m
+[31m-Age 11 variables: 21 [m
+[31m-Age 14 variables: 21 [m
+[31m-Age 17 variables: 21 [m
+[31m-[m
+[31m-=== NEXT STEPS ===[m
+[31m-1. The merged_data object now contains all recoded self-control variables[m
+[31m-2. Consider saving the updated dataset: saveRDS(merged_data, 'path/to/updated_data.rds')[m
+[31m-3. Proceed with longitudinal growth curve modeling or other analyses[m
+[31m-[m
+[31m-Master script execution completed successfully![m
+[31m-[m
+[31m-> ages <- c(3, 5, 7, 11, 14, 17)[m
+[31m-[m
+[31m-> allowed_suffixes <- c("task_completion", "distracted", [m
+[31m-+     "fidgeting", "think_act", "restless", "temper", "obedient", [m
+[31m-+     "lying")[m
+[31m-[m
+[31m-> exists_at_all <- function(suf, age_vec) all(paste0("sc", [m
+[31m-+     age_vec, "_", suf) %in% names(merged_data))[m
+[31m-[m
+[31m-> current_ages <- ages[m
+[31m-[m
+[31m-> repeat {[m
+[31m-+     common_suf <- allowed_suffixes[sapply(allowed_suffixes, exists_at_all, [m
+[31m-+         age_vec = current_ages)][m
+[31m-+     if (length(common_su .... [TRUNCATED] [m
+[31m-[m
+[31m-> if (length(common_suf) < 3) {[m
+[31m-+     avail <- sapply(ages, function(a) paste0("sc", a, "_", allowed_suffixes) %in% [m
+[31m-+         names(merged_data))[m
+[31m-+   .... [TRUNCATED] [m
+[31m-[m
+[31m-> ages <- sort(current_ages)[m
+[31m-[m
+[31m-> var_by_age <- lapply(ages, function(a) paste0("sc", [m
+[31m-+     a, "_", common_suf))[m
+[31m-[m
+[31m-> names(var_by_age) <- paste0("t", ages)[m
+[31m-[m
+[31m-> ordered_vars <- unlist(var_by_age, use.names = FALSE)[m
+[31m-[m
+[31m-> fac_names <- paste0("SC_t", ages)[m
+[31m-[m
+[31m-> lhs <- fac_names[m
+[31m-[m
+[31m-> rhs <- sapply(ages, function(a) paste(paste0("sc", [m
+[31m-+     a, "_", common_suf), collapse = " + "))[m
+[31m-[m
+[31m-> configural_model <- paste(paste(lhs, "=~", rhs), collapse = "\n")[m
+[31m-[m
+[31m-> longFacNames <- list(SC = fac_names)[m
+[31m-[m
+[31m-> longIndNames <- setNames(lapply(common_suf, function(suf) paste0("sc", [m
+[31m-+     ages, "_", suf)), common_suf)[m
+[31m-[m
+[31m-> ME <- measEq.syntax(configural.model = configural_model, [m
+[31m-+     data = merged_data, ordered = ordered_vars, parameterization = "theta", [m
+[31m-+     ID.fa .... [TRUNCATED] [m
+[31m-[m
+[31m-> model_mi <- as.character(ME, single = TRUE)[m
+[31m-[m
+[31m-> center_age <- if (11 %in% ages) 11 else mean(ages)[m
+[31m-[m
+[31m-> time_center <- ages - center_age[m
+[31m-[m
+[31m-> fac_names <- paste0("SC_t", ages)[m
+[31m-[m
+[31m-> gaps <- diff(ages)[m
+[31m-[m
+[31m-> gap_labels <- paste0("phi", gaps)[m
+[31m-[m
+[31m-> label_by_gap <- setNames(gap_labels, gaps)[m
+[31m-[m
+[31m-> ar_lines <- character(0)[m
+[31m-[m
+[31m-> for (i in seq_along(gaps)) {[m
+[31m-+     lhs_i <- paste0("SC_t", ages[i + 1])[m
+[31m-+     rhs_i <- paste0("SC_t", ages[i])[m
+[31m-+     lab_i <- label_by_gap[as.charac .... [TRUNCATED] [m
+[31m-[m
+[31m-> sr_ar <- paste(c("", ar_lines, ""), collapse = "\n")[m
+[31m-[m
+[31m-> sr_growth <- paste0("\n# Latent growth factors measured by the time-specific latent factors\ni =~ ", [m
+[31m-+     paste(paste0("1*", fac_names), collapse  .... [TRUNCATED] [m
+[31m-[m
+[31m-> zero_lat_covs <- combn(fac_names, 2, FUN = function(x) sprintf("%s ~~ 0*%s", [m
+[31m-+     x[1], x[2]))[m
+[31m-[m
+[31m-> zero_lat_covs <- paste(zero_lat_covs, collapse = "\n")[m
+[31m-[m
+[31m-> id_var <- "id"[m
+[31m-[m
+[31m-> parenting_items <- c("tell_off", "take_away_treats", [m
+[31m-+     "timeout", "reason")[m
+[31m-[m
+[31m-> if (!exists("recoded_parenting_age7")) {[m
+[31m-+     source("/home/siyang/dissertation_folder/dissertation/scripts/recode_parenting_age7.R")[m
+[31m-+ }[m
+[31m-Starting parenting variable recoding...[m
+[31m-Created 36 new parenting variables:[m
+[31m-- tv_rules_time[m
+[31m-- tv_rules_hours[m
+[31m-- no_tv_bedroom[m
+[31m-- regular_bedtime[m
+[31m-- outdoor_opportunity[m
+[31m-- supervision_outdoor[m
+[31m-- internet_use_allowed[m
+[31m-- internet_control_strict[m
+[31m-- family_time_home[m
+[31m-- evening_meal_parent_presence[m
+[31m-- tell_off[m
+[31m-- take_away_treats[m
+[31m-- timeout[m
+[31m-- reason[m
+[31m-- smack_rev[m
+[31m-- shout_rev[m
+[31m-- bribe_rev[m
+[31m-- ignore_rev[m
+[31m-- parent_child_closeness[m
+[31m-- enjoy_listen_do[m
+[31m-- express_affection[m
+[31m-- child_weekend_fun[m
+[31m-- child_disclosure_home[m
+[31m-- reading_together[m
+[31m-- storytelling[m
+[31m-- music_together[m
+[31m-- arts_crafts[m
+[31m-- active_play[m
+[31m-- indoor_games[m
+[31m-- park_visits[m
+[31m-- monitoring_structure_index[m
+[31m-- appropriate_sanctioning_index[m
+[31m-- harsh_inconsistent_index[m
+[31m-- warmth_attachment_index[m
+[31m-- involvement_stimulation_index[m
+[31m-- parenting_composite_mean[m
+[31m-Parenting variable recoding completed.[m
+[31m-Number of categories should be increased  in order to count frequencies. [m
+[31m-[m
+[31m- tv_rules_time [m
+[31m-[m
+[31m-    0     1  <NA> [m
+[31m- 2273 11509  5461 [m
+[31m-[m
+[31m-   0    1 <NA> [m
+[31m-11.8 59.8 28.4 [m
+[31m-[m
+[31m- tv_rules_hours [m
+[31m-[m
+[31m-   0    1 <NA> [m
+[31m-6169 7611 5463 [m
+[31m-[m
+[31m-   0    1 <NA> [m
+[31m-32.1 39.6 28.4 [m
+[31m-[m
+[31m- regular_bedtime [m
+[31m-[m
+[31m-                0 0.333333333333333 0.666666666666667                 1 [m
+[31m-              533               798              4248              8204 [m
+[31m-             <NA> [m
+[31m-             5460 [m
+[31m-[m
+[31m-                0 0.333333333333333 0.666666666666667                 1 [m
+[31m-              2.8               4.1              22.1              42.6 [m
+[31m-             <NA> [m
+[31m-             28.4 [m
+[31m-Error in eval(ei, envir) : object 'X_app_complete' not found[m
+[31m-Calls: source ... source -> withVisible -> eval -> eval -> <Anonymous>[m
+[31m-In addition: Warning messages:[m
+[31m-1: In measEq.syntax(configural.model = configural_model, data = merged_data,  :[m
+[31m-  For factors measured only by categorical indicators, constraints on intercepts are insufficient to identify latent means when the intercepts are already fixed to zero in order to identify latent item scales.  To preventunderidentified models, it is recommended to instead set ID.fac = "std.lv".[m
+[31m-2: In psych::alpha(recoded_parenting_age7[, overall], check.keys = TRUE) :[m
+[31m-  Some items were negatively correlated with the first principal component and were automatically reversed.[m
+[31m- This is indicated by a negative sign for the variable name.[m
+[31m-Execution halted[m
+[1mdiff --git a/scripts/data_preparation.R b/scripts/data_preparation.R[m
+[1mindex b3014c9..7f1bf02 100644[m
+[1m--- a/scripts/data_preparation.R[m
+[1m+++ b/scripts/data_preparation.R[m
+[36m@@ -22,7 +22,7 @@[m [mp_load(psych)[m
+ [m
+ # Load the saved RDS file[m
+ data_path <- "/home/siyang/dissertation_folder/data"[m
+[31m-merged_data <- readRDS(file.path(data_path, "merged1203.rds"))[m
+[32m+[m[32mmerged_data <- readRDS(file.path(data_path, "merged0914.rds"))[m
+ [m
+ # Basic info[m
+ dim(merged_data)[m
+[1mdiff --git a/scripts/lcmsr_self_control.R b/scripts/lcmsr_self_control.R[m
+[1mindex 1c4ee4f..cbec103 100644[m
+[1m--- a/scripts/lcmsr_self_control.R[m
+[1m+++ b/scripts/lcmsr_self_control.R[m
+[36m@@ -2,46 +2,32 @@[m
+ library(lavaan)[m
+ library(semTools)[m
+ [m
+[31m-# --- Direct variable specification (all self-control indicators across ages)[m
+[31m-# Variables per age (wide data)[m
+[31m-var_by_age <- list([m
+[31m-  t3  = c("sc3_task_completion", "sc3_distracted", "sc3_fidgeting", "sc3_think_act",[m
+[31m-          "sc3_restless", "sc3_temper", "sc3_obedient", "sc3_lying"),[m
+[31m-  t5  = c("sc5_task_completion", "sc5_distracted", "sc5_fidgeting", "sc5_think_act",[m
+[31m-          "sc5_restless", "sc5_temper", "sc5_obedient", "sc5_lying"),[m
+[31m-  t7  = c("sc7_task_completion", 
