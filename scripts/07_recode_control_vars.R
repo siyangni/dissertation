@@ -94,7 +94,7 @@ recode_control_variables <- function(data) {
 # source("01_data_preparation.R")  # If you need to load the data first
 
 # Apply recoding to your dataset
-merged_data_recode <- recode_control_variables(merged_data)
+merged_data <- recode_control_variables(merged_data)
 
 # Check the recoded variables
 # summary(merged_data_recode$amacqu00)
