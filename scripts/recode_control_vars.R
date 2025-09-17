@@ -12,18 +12,23 @@ recode_control_variables <- function(data) {
   
   # Parents' highest education at birth: amacqu00
   # Recode 1, 8, 9, 95, 96 as NA, all others minus 1
-  data_recode$amacqu00 <- case_when(
+  data_recode$parents_education <- case_when(
     data_recode$amacqu00 %in% c(1, 8, 9, 95, 96) ~ NA_real_,
     TRUE ~ data_recode$amacqu00 - 1
   )
   
   # Sex at birth: ahcsexa0
   # Recode 1 as 0 (Male), 2 as 1 (Female)
-  data_recode$ahcsexa0 <- case_when(
+  data_recode$sex <- case_when(
     data_recode$ahcsexa0 == 1 ~ 0,
     data_recode$ahcsexa0 == 2 ~ 1,
     TRUE ~ NA_real_  # Handle any other values as NA
   )
+
+  # recode sex to factor
+  data_recode$sex_factor <- factor(data_recode$sex, 
+                                        levels = c(0, 1),
+                                        labels = c("Male", "Female"))
   
   # Race at Birth: adceeaa0
   # Recode -9, -8, -1 as missing
@@ -32,7 +37,7 @@ recode_control_variables <- function(data) {
   # 12,13,14 as Black
   # 4,5,6,7 as mixed
   # 95 as others
-  data_recode$adceeaa0 <- case_when(
+  data_recode$race <- case_when(
     data_recode$adceeaa0 %in% c(-9, -8, -1) ~ NA_real_,
     data_recode$adceeaa0 %in% c(1, 2, 3) ~ 1,  # White
     data_recode$adceeaa0 %in% c(8, 9, 10, 11, 15) ~ 2,  # Asian
@@ -43,7 +48,7 @@ recode_control_variables <- function(data) {
   )
   
   # Create factor labels for race variable
-  data_recode$adceeaa0_factor <- factor(data_recode$adceeaa0, 
+  data_recode$race_factor <- factor(data_recode$race, 
                                         levels = c(1, 2, 3, 4, 5),
                                         labels = c("White", "Asian", "Black", "Mixed", "Others"))
   
@@ -51,7 +56,7 @@ recode_control_variables <- function(data) {
   # Recode 9,8,-1 as NA
   # 1,4,5,6 as not_married (0)
   # 2,3 as married (1)
-  data_recode$amfcin00 <- case_when(
+  data_recode$marital_status <- case_when(
     data_recode$amfcin00 %in% c(9, 8, -1) ~ NA_real_,
     data_recode$amfcin00 %in% c(1, 4, 5, 6) ~ 0,  # not_married
     data_recode$amfcin00 %in% c(2, 3) ~ 1,  # married
@@ -59,20 +64,20 @@ recode_control_variables <- function(data) {
   )
   
   # Create factor labels for marital status
-  data_recode$amfcin00_factor <- factor(data_recode$amfcin00, 
+  data_recode$marital_status_factor <- factor(data_recode$marital_status, 
                                         levels = c(0, 1),
                                         labels = c("Not Married", "Married"))
   
   # Parents Income at Birth: amnico00 (couple)
   # Recode -1, 96, 97 as NA, others leave as is
-  data_recode$amnico00 <- case_when(
+  data_recode$parents_income_couple <- case_when(
     data_recode$amnico00 %in% c(-1, 96, 97) ~ NA_real_,
     TRUE ~ data_recode$amnico00
   )
   
   # Parents Income at Birth: amnilp00 (lone parent)
   # Recode -1, 96, 97 as NA, others leave as is
-  data_recode$amnilp00 <- case_when(
+  data_recode$parents_income_lone_parent <- case_when(
     data_recode$amnilp00 %in% c(-1, 96, 97) ~ NA_real_,
     TRUE ~ data_recode$amnilp00
   )
