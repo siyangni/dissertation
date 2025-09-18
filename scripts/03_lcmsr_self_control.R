@@ -129,7 +129,8 @@ fit_sr <- lavaan::sem(
   estimator        = "ULSMV",        # fast & robust for many ordinals
   parameterization = "theta",
   std.lv           = FALSE,
-  meanstructure    = TRUE
+  meanstructure    = TRUE,
+  sampling.weights = "weight1" 
 )
 
 summary(fit_sr, fit.measures = TRUE, standardized = TRUE)
@@ -187,6 +188,7 @@ fit_sr_lb <- lavaan::sem(
   parameterization = "theta",
   std.lv           = FALSE,
   meanstructure    = TRUE,
+  sampling.weights = "weight1"
 )
 
 summary(fit_sr_lb, fit.measures = TRUE, standardized = TRUE)
