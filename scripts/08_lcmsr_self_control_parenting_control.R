@@ -3,18 +3,6 @@ library(pacman)
 p_load(lavaan)
 p_load(semTools)
 
-# --- Load data if not already loaded
-utils::globalVariables(c("merged_data", "recoded_parenting_age7"))
-
-if (!exists("merged_data")) {
-  data_path <- "/home/siyang/dissertation_folder/data"
-  merged_data <- readRDS(file.path(data_path, "merged1203.rds"))
-}
-
-# Check if self-control variables are recoded, if not, run recoding script
-if (sum(grepl("^sc(3|5|7|11|14|17)_", names(merged_data))) == 0) {
-  source("/home/siyang/dissertation_folder/dissertation/scripts/recode_self_control.R")
-}
 
 # --- Ages and item suffixes (self-control)
 ages <- c(3, 5, 7, 11, 14, 17)
@@ -206,12 +194,7 @@ print(round(fitMeasures(fit_sr_lb_parenting,
 
 # --- Wave-1 covariates: names and preprocessing -----------------------------
 covars_wave1 <- c(
-  "parents_education",
-  "sex_factor",
-  "race_factor",
-  "marital_status_factor",
-  "parents_income_couple",
-  "parents_income_lone_parent"
+  "sex_factor"
 )
 
 # Sanity check for presence
@@ -282,17 +265,13 @@ ordered_all <- unique(c(ordered_vars, parenting_items))
 
 # --- Structural syntax: add covariates to growth factors and SC_t7 -----------
 #   Also regress P7 on controls to adjust for wave-1 confounding (recommended).
-gi_terms  <- paste(paste0("gi_",  covariate_names, "*", covariate_names), collapse = " + ")
-gs_terms  <- paste(paste0("gs_",  covariate_names, "*", covariate_names), collapse = " + ")
-gt7_terms <- paste(paste0("gt7_", covariate_names, "*", covariate_names), collapse = " + ")
-gp7_terms <- paste(paste0("gp7_", covariate_names, "*", covariate_names), collapse = " + ")
+gi_terms <- paste(covariate_names, collapse = " + ")
+gs_terms <- gi_terms  # same set on s
 
 sr_covars_controls <- paste0('\n# Growth factors and age-7 factor regressed on P7 and Wave-1 controls\n',
 'i    ~ b_i*P7',  if (nchar(gi_terms))  paste0(" + ", gi_terms)  else "", '\n',
 's    ~ b_s*P7',  if (nchar(gs_terms))  paste0(" + ", gs_terms)  else "", '\n',
-'SC_t7 ~ b_t7*P7',if (nchar(gt7_terms)) paste0(" + ", gt7_terms) else "", '\n\n',
-'# Adjust P7 for the same controls (omit or replace with `P7 ~~` lines if you prefer)\n',
-'P7   ~ ', gp7_terms, '\n')
+'SC_t7 ~ b_t7*P7\n')
 
 # --- Model 3A: Linear LCM-SR + Parenting + Wave-1 controls -------------------
 model_sr_parenting_ctrl <- paste(model_mi_aug, sr_growth, sr_ar, zero_lat_covs,
@@ -302,13 +281,12 @@ fit_sr_parenting_ctrl <- lavaan::sem(
   model_sr_parenting_ctrl,
   data             = merged_data,
   ordered          = ordered_all,
-  estimator        = "ULSMV",        # recommended for ordinal indicators
+  estimator        = "WLSMV",        # recommended for ordinal indicators
   parameterization = "theta",
   std.lv           = FALSE,
   meanstructure    = TRUE,
   fixed.x          = TRUE
 )
-
 
 summary(fit_sr_parenting_ctrl, fit.measures = TRUE, standardized = TRUE)
 
@@ -363,7 +341,7 @@ fit_sr_lb_parenting_ctrl <- lavaan::sem(
   model_sr_lb_parenting_ctrl,
   data             = merged_data,
   ordered          = ordered_all,
-  estimator        = "WLSMV",
+  estimator        = "LSMV",
   parameterization = "theta",
   std.lv           = FALSE,
   meanstructure    = TRUE,
