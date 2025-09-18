@@ -5,7 +5,7 @@ p_load(psych)
 p_load(dplyr)
 
 # Set the data directory path
-# data_path <- "/home/siyang/dissertation_folder/data"
+data_path <- "/home/siyang/dissertation_folder/data"
 
 # Load the RDS file (assuming this is merged1203.rds as mentioned in your request)
 # merged1203 <- readRDS(file.path(data_path, "merged1203.rds"))
