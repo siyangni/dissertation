@@ -22,7 +22,25 @@
 # Safely coerce vector to numeric while preserving 1/2/3 codes if stored as
 # character/factor. Values outside {1,2,3} become NA.
 safe_to_numeric <- function(x) {
-  x_num <- suppressWarnings(as.numeric(as.character(x)))
+  # Handle haven_labelled vectors without using as.character() (which errors)
+  if (inherits(x, "haven_labelled") || inherits(x, "labelled")) {
+    # Prefer removing labels while keeping underlying numeric codes
+    x_processed <- tryCatch({
+      if (requireNamespace("haven", quietly = TRUE)) {
+        haven::zap_labels(x)
+      } else {
+        x
+      }
+    }, error = function(e) x)
+    x_num <- suppressWarnings(as.numeric(x_processed))
+  } else if (is.factor(x) || is.character(x)) {
+    # For factors/characters, coerce via character to preserve 1/2/3 labels
+    x_num <- suppressWarnings(as.numeric(as.character(x)))
+  } else {
+    # For plain numeric/integer, coerce directly
+    x_num <- suppressWarnings(as.numeric(x))
+  }
+
   x_num[!(x_num %in% c(1, 2, 3))] <- NA
   return(x_num)
 }

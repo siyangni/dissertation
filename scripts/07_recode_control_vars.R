@@ -1,630 +1,112 @@
-# --- Packages
+# Load required libraries
 library(pacman)
-p_load(lavaan, semTools)
+p_load(tidyverse)
 
-# --- Load data if not already loaded
-utils::globalVariables(c("merged_data", "recoded_parenting_age7"))
+# =============================================================================
+# Function to recode control variables
+# =============================================================================
 
-if (!exists("merged_data")) {
-  data_path <- "/home/siyang/dissertation_folder/data"
-  merged_data <- readRDS(file.path(data_path, "merged1203.rds"))
-}
-
-# --- Check if self-control variables are recoded
-# Explicitly list expected self-control variables
-expected_sc_variables <- c(
-  # Age 3
-  "sc3_task_completion", "sc3_distracted", "sc3_fidgeting", "sc3_think_act",
-  "sc3_restless", "sc3_temper", "sc3_obedient", "sc3_lying",
-  # Age 5  
-  "sc5_task_completion", "sc5_distracted", "sc5_fidgeting", "sc5_think_act",
-  "sc5_restless", "sc5_temper", "sc5_obedient", "sc5_lying",
-  # Age 7
-  "sc7_task_completion", "sc7_distracted", "sc7_fidgeting", "sc7_think_act", 
-  "sc7_restless", "sc7_temper", "sc7_obedient", "sc7_lying",
-  # Age 11
-  "sc11_task_completion", "sc11_distracted", "sc11_fidgeting", "sc11_think_act",
-  "sc11_restless", "sc11_temper", "sc11_obedient", "sc11_lying",
-  # Age 14
-  "sc14_task_completion", "sc14_distracted", "sc14_fidgeting", "sc14_think_act",
-  "sc14_restless", "sc14_temper", "sc14_obedient", "sc14_lying",
-  # Age 17
-  "sc17_task_completion", "sc17_distracted", "sc17_fidgeting", "sc17_think_act",
-  "sc17_restless", "sc17_temper", "sc17_obedient", "sc17_lying"
-)
-
-# Check if variables exist, if not run recoding script
-sc_vars_exist <- all(expected_sc_variables %in% names(merged_data))
-
-if (!sc_vars_exist) {
-  source("/home/siyang/dissertation_folder/dissertation/scripts/recode_self_control.R")
-}
-
-# --- Check which items are available at all ages
-# Define the 8 possible items
-task_completion_available <- all(c("sc3_task_completion", "sc5_task_completion", 
-                                   "sc7_task_completion", "sc11_task_completion", 
-                                   "sc14_task_completion", "sc17_task_completion") %in% names(merged_data))
-
-distracted_available <- all(c("sc3_distracted", "sc5_distracted", 
-                              "sc7_distracted", "sc11_distracted", 
-                              "sc14_distracted", "sc17_distracted") %in% names(merged_data))
-
-fidgeting_available <- all(c("sc3_fidgeting", "sc5_fidgeting", 
-                             "sc7_fidgeting", "sc11_fidgeting", 
-                             "sc14_fidgeting", "sc17_fidgeting") %in% names(merged_data))
-
-think_act_available <- all(c("sc3_think_act", "sc5_think_act", 
-                             "sc7_think_act", "sc11_think_act", 
-                             "sc14_think_act", "sc17_think_act") %in% names(merged_data))
-
-restless_available <- all(c("sc3_restless", "sc5_restless", 
-                            "sc7_restless", "sc11_restless", 
-                            "sc14_restless", "sc17_restless") %in% names(merged_data))
-
-temper_available <- all(c("sc3_temper", "sc5_temper", 
-                          "sc7_temper", "sc11_temper", 
-                          "sc14_temper", "sc17_temper") %in% names(merged_data))
-
-obedient_available <- all(c("sc3_obedient", "sc5_obedient", 
-                            "sc7_obedient", "sc11_obedient", 
-                            "sc14_obedient", "sc17_obedient") %in% names(merged_data))
-
-lying_available <- all(c("sc3_lying", "sc5_lying", 
-                         "sc7_lying", "sc11_lying", 
-                         "sc14_lying", "sc17_lying") %in% names(merged_data))
-
-# Count available items
-available_items_count <- sum(c(task_completion_available, distracted_available, 
-                               fidgeting_available, think_act_available,
-                               restless_available, temper_available, 
-                               obedient_available, lying_available))
-
-if (available_items_count < 3) {
-  stop("Need at least 3 common indicators across all ages. Found: ", available_items_count)
-}
-
-# --- Build measurement model explicitly based on available items
-# Start with empty model
-configural_model <- ""
-
-# Add factors based on available items
-if (task_completion_available & distracted_available & fidgeting_available) {
-  # Use first 3 items if available
-  configural_model <- "
-SC_t3 =~ sc3_task_completion + sc3_distracted + sc3_fidgeting
-SC_t5 =~ sc5_task_completion + sc5_distracted + sc5_fidgeting  
-SC_t7 =~ sc7_task_completion + sc7_distracted + sc7_fidgeting
-SC_t11 =~ sc11_task_completion + sc11_distracted + sc11_fidgeting
-SC_t14 =~ sc14_task_completion + sc14_distracted + sc14_fidgeting
-SC_t17 =~ sc17_task_completion + sc17_distracted + sc17_fidgeting
-"
+recode_control_variables <- function(data) {
+  # Create a copy of the data to avoid modifying the original
+  data_recode <- data
   
-  # Variables for lavaan ordered specification
-  all_sc_variables <- c(
-    "sc3_task_completion", "sc3_distracted", "sc3_fidgeting",
-    "sc5_task_completion", "sc5_distracted", "sc5_fidgeting",
-    "sc7_task_completion", "sc7_distracted", "sc7_fidgeting", 
-    "sc11_task_completion", "sc11_distracted", "sc11_fidgeting",
-    "sc14_task_completion", "sc14_distracted", "sc14_fidgeting",
-    "sc17_task_completion", "sc17_distracted", "sc17_fidgeting"
+  # Parents' highest education at birth: amacqu00
+  # Recode 1, 8, 9, 95, 96 as NA, all others minus 1
+  data_recode$parents_education <- case_when(
+    data_recode$amacqu00 %in% c(1, 8, 9, 95, 96) ~ NA_real_,
+    TRUE ~ data_recode$amacqu00 - 1
   )
   
-  # Set up for measurement invariance
-  longFacNames <- list(SC = c("SC_t3", "SC_t5", "SC_t7", "SC_t11", "SC_t14", "SC_t17"))
-  longIndNames <- list(
-    task_completion = c("sc3_task_completion", "sc5_task_completion", "sc7_task_completion", 
-                        "sc11_task_completion", "sc14_task_completion", "sc17_task_completion"),
-    distracted = c("sc3_distracted", "sc5_distracted", "sc7_distracted",
-                   "sc11_distracted", "sc14_distracted", "sc17_distracted"),
-    fidgeting = c("sc3_fidgeting", "sc5_fidgeting", "sc7_fidgeting",
-                  "sc11_fidgeting", "sc14_fidgeting", "sc17_fidgeting")
+  # Sex at birth: ahcsexa0
+  # Recode 1 as 0 (Male), 2 as 1 (Female)
+  data_recode$sex <- case_when(
+    data_recode$ahcsexa0 == 1 ~ 0,
+    data_recode$ahcsexa0 == 2 ~ 1,
+    TRUE ~ NA_real_  # Handle any other values as NA
+  )
+
+  # recode sex to factor
+  data_recode$sex_factor <- factor(data_recode$sex, 
+                                        levels = c(0, 1),
+                                        labels = c("Male", "Female"))
+  
+  # Race at Birth: adceeaa0
+  # Recode -9, -8, -1 as missing
+  # 1,2,3 as white
+  # 8,9,10,11,15 as Asian
+  # 12,13,14 as Black
+  # 4,5,6,7 as mixed
+  # 95 as others
+  data_recode$race <- case_when(
+    data_recode$adceeaa0 %in% c(-9, -8, -1) ~ NA_real_,
+    data_recode$adceeaa0 %in% c(1, 2, 3) ~ 1,  # White
+    data_recode$adceeaa0 %in% c(8, 9, 10, 11, 15) ~ 2,  # Asian
+    data_recode$adceeaa0 %in% c(12, 13, 14) ~ 3,  # Black
+    data_recode$adceeaa0 %in% c(4, 5, 6, 7) ~ 4,  # Mixed
+    data_recode$adceeaa0 == 95 ~ 5,  # Others
+    TRUE ~ NA_real_  # Any other values as NA
   )
   
-} else if (task_completion_available & distracted_available & think_act_available) {
-  # Alternative 3-item set
-  configural_model <- "
-SC_t3 =~ sc3_task_completion + sc3_distracted + sc3_think_act
-SC_t5 =~ sc5_task_completion + sc5_distracted + sc5_think_act
-SC_t7 =~ sc7_task_completion + sc7_distracted + sc7_think_act
-SC_t11 =~ sc11_task_completion + sc11_distracted + sc11_think_act
-SC_t14 =~ sc14_task_completion + sc14_distracted + sc14_think_act
-SC_t17 =~ sc17_task_completion + sc17_distracted + sc17_think_act
-"
+  # Create factor labels for race variable
+  data_recode$race_factor <- factor(data_recode$race, 
+                                        levels = c(1, 2, 3, 4, 5),
+                                        labels = c("White", "Asian", "Black", "Mixed", "Others"))
   
-  all_sc_variables <- c(
-    "sc3_task_completion", "sc3_distracted", "sc3_think_act",
-    "sc5_task_completion", "sc5_distracted", "sc5_think_act",
-    "sc7_task_completion", "sc7_distracted", "sc7_think_act",
-    "sc11_task_completion", "sc11_distracted", "sc11_think_act", 
-    "sc14_task_completion", "sc14_distracted", "sc14_think_act",
-    "sc17_task_completion", "sc17_distracted", "sc17_think_act"
+  # Parents Marital status at 9 month old: amfcin00
+  # Recode 9,8,-1 as NA
+  # 1,4,5,6 as not_married (0)
+  # 2,3 as married (1)
+  data_recode$marital_status <- case_when(
+    data_recode$amfcin00 %in% c(9, 8, -1) ~ NA_real_,
+    data_recode$amfcin00 %in% c(1, 4, 5, 6) ~ 0,  # not_married
+    data_recode$amfcin00 %in% c(2, 3) ~ 1,  # married
+    TRUE ~ NA_real_  # Any other values as NA
   )
   
-  longFacNames <- list(SC = c("SC_t3", "SC_t5", "SC_t7", "SC_t11", "SC_t14", "SC_t17"))
-  longIndNames <- list(
-    task_completion = c("sc3_task_completion", "sc5_task_completion", "sc7_task_completion",
-                        "sc11_task_completion", "sc14_task_completion", "sc17_task_completion"),
-    distracted = c("sc3_distracted", "sc5_distracted", "sc7_distracted",
-                   "sc11_distracted", "sc14_distracted", "sc17_distracted"),
-    think_act = c("sc3_think_act", "sc5_think_act", "sc7_think_act",
-                  "sc11_think_act", "sc14_think_act", "sc17_think_act")
+  # Create factor labels for marital status
+  data_recode$marital_status_factor <- factor(data_recode$marital_status, 
+                                        levels = c(0, 1),
+                                        labels = c("Not Married", "Married"))
+  
+  # Parents Income at Birth: amnico00 (couple)
+  # Recode -1, 96, 97 as NA, others leave as is
+  data_recode$parents_income_couple <- case_when(
+    data_recode$amnico00 %in% c(-1, 96, 97) ~ NA_real_,
+    TRUE ~ data_recode$amnico00
   )
   
-} else {
-  stop("Cannot find a suitable set of 3+ indicators available at all ages")
+  # Parents Income at Birth: amnilp00 (lone parent)
+  # Recode -1, 96, 97 as NA, others leave as is
+  data_recode$parents_income_lone_parent <- case_when(
+    data_recode$amnilp00 %in% c(-1, 96, 97) ~ NA_real_,
+    TRUE ~ data_recode$amnilp00
+  )
+  
+  # Return the recoded data
+  return(data_recode)
 }
 
-# --- Strong longitudinal measurement invariance
-ME <- measEq.syntax(
-  configural.model = configural_model,
-  data             = merged_data,
-  ordered          = all_sc_variables,
-  parameterization = "theta",
-  ID.fac           = "UL", 
-  ID.cat           = "Wu.Estabrook.2016",
-  longFacNames     = longFacNames,
-  longIndNames     = longIndNames,
-  long.equal       = c("thresholds", "loadings"),
-  auto             = 1L,
-  return.fit       = FALSE
-)
-
-measurement_model <- as.character(ME, single = TRUE)
-
-# --- Autoregressive structure (explicit paths)
-autoregressive_structure <- "
-# Autoregressive paths with time-gap specific parameters
-SC_t5 ~ phi2*SC_t3     # 2-year gap (age 3 to 5)
-SC_t7 ~ phi2*SC_t5     # 2-year gap (age 5 to 7)  
-SC_t11 ~ phi4*SC_t7    # 4-year gap (age 7 to 11)
-SC_t14 ~ phi3*SC_t11   # 3-year gap (age 11 to 14)
-SC_t17 ~ phi3*SC_t14   # 3-year gap (age 14 to 17)
-"
-
-# --- Linear growth model (time centered at age 11)
-linear_growth_syntax <- "
-# Linear latent growth model (time centered at age 11)
-# Intercept factor (all loadings = 1)
-i =~ 1*SC_t3 + 1*SC_t5 + 1*SC_t7 + 1*SC_t11 + 1*SC_t14 + 1*SC_t17
-
-# Linear slope factor (time scores: -8, -6, -4, 0, 3, 6)
-s =~ -8*SC_t3 + -6*SC_t5 + -4*SC_t7 + 0*SC_t11 + 3*SC_t14 + 6*SC_t17
-
-# Fix time-specific factor means to zero
-SC_t3 ~ 0*1
-SC_t5 ~ 0*1
-SC_t7 ~ 0*1
-SC_t11 ~ 0*1
-SC_t14 ~ 0*1
-SC_t17 ~ 0*1
-
-# Growth factor means and variances
-i ~ 1
-s ~ 1
-i ~~ i
-s ~~ s
-i ~~ s
-"
-
-# --- Latent basis growth model
-latent_basis_growth <- "
-# Latent basis growth model
-# Intercept factor (all loadings = 1)
-i =~ 1*SC_t3 + 1*SC_t5 + 1*SC_t7 + 1*SC_t11 + 1*SC_t14 + 1*SC_t17
-
-# Latent basis slope factor (first=0, last=1, middle freely estimated)
-s =~ 0*SC_t3 + lb5*SC_t5 + lb7*SC_t7 + lb11*SC_t11 + lb14*SC_t14 + 1*SC_t17
-
-# Fix time-specific factor means to zero
-SC_t3 ~ 0*1
-SC_t5 ~ 0*1
-SC_t7 ~ 0*1
-SC_t11 ~ 0*1
-SC_t14 ~ 0*1
-SC_t17 ~ 0*1
-
-# Growth factor means and variances
-i ~ 1
-s ~ 1
-i ~~ i
-s ~~ s
-i ~~ s
-"
-
-# --- Zero covariances among time-specific factors (AR handles dependencies)
-zero_covariances <- "
-# Prevent residual covariances among time-specific factors
-SC_t3 ~~ 0*SC_t5
-SC_t3 ~~ 0*SC_t7
-SC_t3 ~~ 0*SC_t11
-SC_t3 ~~ 0*SC_t14
-SC_t3 ~~ 0*SC_t17
-SC_t5 ~~ 0*SC_t7
-SC_t5 ~~ 0*SC_t11
-SC_t5 ~~ 0*SC_t14
-SC_t5 ~~ 0*SC_t17
-SC_t7 ~~ 0*SC_t11
-SC_t7 ~~ 0*SC_t14
-SC_t7 ~~ 0*SC_t17
-SC_t11 ~~ 0*SC_t14
-SC_t11 ~~ 0*SC_t17
-SC_t14 ~~ 0*SC_t17
-"
-
-# -------------------------------------------------------------------
-# Parenting at age 7 as a latent construct
-# -------------------------------------------------------------------
-# Check parenting variables exist
-parenting_variables <- c("tell_off", "take_away_treats", "timeout", "reason")
-parenting_vars_exist <- all(parenting_variables %in% names(merged_data))
-
-if (!parenting_vars_exist) {
-  missing_parenting <- parenting_variables[!parenting_variables %in% names(merged_data)]
-  stop("Missing parenting variables: ", paste(missing_parenting, collapse = ", "))
-}
-
-# All ordered variables for lavaan
-all_ordered_variables <- c(all_sc_variables, parenting_variables)
-
-# Parenting measurement model
-parenting_model <- "
-# Appropriate parenting at age 7 (higher = more appropriate)
-P7 =~ tell_off + take_away_treats + timeout + reason
-
-# Anchor latent mean at 0 for identification
-P7 ~ 0*1
-P7 ~~ P7
-"
-
-# Basic structural relations (parenting effects)
-basic_structural_relations <- "
-# Parenting effects on growth factors and age-7 self-control
-i ~ b_i*P7
-s ~ b_s*P7
-SC_t7 ~ b_t7*P7
-"
-
-# -------------------------------------------------------------------
-# Model 1: Linear LCM-SR + Parenting
-# -------------------------------------------------------------------
-model_1_syntax <- paste(
-  measurement_model,
-  parenting_model,
-  linear_growth_syntax,
-  autoregressive_structure,
-  zero_covariances,
-  basic_structural_relations,
-  sep = "\n"
-)
-
-fit_model_1 <- lavaan::sem(
-  model_1_syntax,
-  data             = merged_data,
-  ordered          = all_ordered_variables,
-  estimator        = "WLSMV",
-  parameterization = "theta",
-  std.lv           = FALSE,
-  meanstructure    = TRUE
-)
-
-cat("\n=== Model 1: Linear LCM-SR + Parenting ===\n")
-summary(fit_model_1, fit.measures = TRUE, standardized = TRUE)
-
-# Extract fit indices
-fit_indices_1 <- fitMeasures(fit_model_1,
-  c("chisq.scaled", "df", "cfi.scaled", "tli.scaled", "rmsea.scaled", "srmr"))
-print(round(fit_indices_1, 3))
-
-# Calculate parenting effects by age (manual calculation)
-PE_1 <- parameterEstimates(fit_model_1)
-b_i_1 <- PE_1$est[PE_1$lhs == "i" & PE_1$op == "~" & PE_1$rhs == "P7"]
-b_s_1 <- PE_1$est[PE_1$lhs == "s" & PE_1$op == "~" & PE_1$rhs == "P7"]
-
-parenting_effect_age3 <- b_i_1 + b_s_1 * (-8)
-parenting_effect_age5 <- b_i_1 + b_s_1 * (-6)
-parenting_effect_age7 <- b_i_1 + b_s_1 * (-4)
-parenting_effect_age11 <- b_i_1 + b_s_1 * (0)
-parenting_effect_age14 <- b_i_1 + b_s_1 * (3)
-parenting_effect_age17 <- b_i_1 + b_s_1 * (6)
-
-cat("\n--- Parenting effects on latent self-control by age ---\n")
-cat("Age 3: ", round(parenting_effect_age3, 3), "\n")
-cat("Age 5: ", round(parenting_effect_age5, 3), "\n")
-cat("Age 7: ", round(parenting_effect_age7, 3), "\n")
-cat("Age 11: ", round(parenting_effect_age11, 3), "\n")
-cat("Age 14: ", round(parenting_effect_age14, 3), "\n")
-cat("Age 17: ", round(parenting_effect_age17, 3), "\n")
-
-# Standardized effects
-STD_1 <- standardizedSolution(fit_model_1)
-b_i_std_1 <- STD_1$est.std[STD_1$lhs == "i" & STD_1$op == "~" & STD_1$rhs == "P7"]
-b_s_std_1 <- STD_1$est.std[STD_1$lhs == "s" & STD_1$op == "~" & STD_1$rhs == "P7"]
-b_t7_std_1 <- STD_1$est.std[STD_1$lhs == "SC_t7" & STD_1$op == "~" & STD_1$rhs == "P7"]
-
-cat("\n--- Standardized effects ---\n")
-cat("Intercept: ", round(b_i_std_1, 3), "\n")
-cat("Slope: ", round(b_s_std_1, 3), "\n")
-cat("Age 7 direct: ", round(b_t7_std_1, 3), "\n")
-
-# -------------------------------------------------------------------
-# Model 2: Latent-Basis LCM-SR + Parenting
-# -------------------------------------------------------------------
-model_2_syntax <- paste(
-  measurement_model,
-  parenting_model,
-  latent_basis_growth,
-  autoregressive_structure,
-  zero_covariances,
-  basic_structural_relations,
-  sep = "\n"
-)
-
-fit_model_2 <- lavaan::sem(
-  model_2_syntax,
-  data             = merged_data,
-  ordered          = all_ordered_variables,
-  estimator        = "WLSMV",
-  parameterization = "theta",
-  std.lv           = FALSE,
-  meanstructure    = TRUE
-)
-
-cat("\n=== Model 2: Latent-Basis LCM-SR + Parenting ===\n")
-summary(fit_model_2, fit.measures = TRUE, standardized = TRUE)
-
-fit_indices_2 <- fitMeasures(fit_model_2,
-  c("chisq.scaled", "df", "cfi.scaled", "tli.scaled", "rmsea.scaled", "srmr"))
-print(round(fit_indices_2, 3))
-
-# -------------------------------------------------------------------
-# Wave-1 covariates processing (explicit variable checking and recoding)
-# -------------------------------------------------------------------
-
-# Load control variable recoding script first to ensure variables are processed
-source("/home/siyang/dissertation_folder/dissertation/scripts/recode_control_variables.R")
-
-# Check required covariates exist
-required_covariates <- c("parents_education", "sex_factor", "race_factor", 
-                         "marital_status_factor", "parents_income_couple", 
-                         "parents_income_lone_parent")
-
-missing_covariates <- required_covariates[!required_covariates %in% names(merged_data)]
-if (length(missing_covariates) > 0) {
-  stop("Missing covariates: ", paste(missing_covariates, collapse = ", "))
-}
-
-# Process each covariate explicitly based on actual data structure
-processed_covariate_names <- character(0)
-
-# 1. Parents education (numeric, standardize)
-merged_data$parents_education_z <- as.numeric(scale(merged_data$parents_education))
-merged_data$parents_education_z[is.na(merged_data$parents_education_z)] <- 0
-processed_covariate_names <- c(processed_covariate_names, "parents_education_z")
-
-# 2. Sex factor (factor with levels "Male", "Female" - use Female as reference)
-merged_data$sex_factor_Male <- as.numeric(merged_data$sex_factor == "Male")
-merged_data$sex_factor_Male[is.na(merged_data$sex_factor_Male)] <- 0
-processed_covariate_names <- c(processed_covariate_names, "sex_factor_Male")
-
-# 3. Race factor (factor with levels "White", "Asian", "Black", "Mixed", "Others" - use White as reference)
-merged_data$race_factor_Asian <- as.numeric(merged_data$race_factor == "Asian")
-merged_data$race_factor_Asian[is.na(merged_data$race_factor_Asian)] <- 0
-
-merged_data$race_factor_Black <- as.numeric(merged_data$race_factor == "Black")
-merged_data$race_factor_Black[is.na(merged_data$race_factor_Black)] <- 0
-
-merged_data$race_factor_Mixed <- as.numeric(merged_data$race_factor == "Mixed")
-merged_data$race_factor_Mixed[is.na(merged_data$race_factor_Mixed)] <- 0
-
-merged_data$race_factor_Others <- as.numeric(merged_data$race_factor == "Others")
-merged_data$race_factor_Others[is.na(merged_data$race_factor_Others)] <- 0
-
-processed_covariate_names <- c(processed_covariate_names, "race_factor_Asian", 
-                               "race_factor_Black", "race_factor_Mixed", "race_factor_Others")
-
-# 4. Marital status factor (factor with levels "Not Married", "Married" - use Not Married as reference)
-merged_data$marital_status_factor_Married <- as.numeric(merged_data$marital_status_factor == "Married")
-merged_data$marital_status_factor_Married[is.na(merged_data$marital_status_factor_Married)] <- 0
-processed_covariate_names <- c(processed_covariate_names, "marital_status_factor_Married")
-
-# 5. Parents income couple (numeric, standardize)
-merged_data$parents_income_couple_z <- as.numeric(scale(merged_data$parents_income_couple))
-merged_data$parents_income_couple_z[is.na(merged_data$parents_income_couple_z)] <- 0
-processed_covariate_names <- c(processed_covariate_names, "parents_income_couple_z")
-
-# 6. Parents income lone parent (numeric, standardize)
-merged_data$parents_income_lone_parent_z <- as.numeric(scale(merged_data$parents_income_lone_parent))
-merged_data$parents_income_lone_parent_z[is.na(merged_data$parents_income_lone_parent_z)] <- 0
-processed_covariate_names <- c(processed_covariate_names, "parents_income_lone_parent_z")
-
-cat("\nProcessed covariates:\n")
-cat("- parents_education_z (standardized)\n")
-cat("- sex_factor_Male (reference: Female)\n") 
-cat("- race_factor_Asian, race_factor_Black, race_factor_Mixed, race_factor_Others (reference: White)\n")
-cat("- marital_status_factor_Married (reference: Not Married)\n")
-cat("- parents_income_couple_z (standardized)\n")
-cat("- parents_income_lone_parent_z (standardized)\n")
-
-# Create structural relations with all explicit covariate terms
-structural_with_controls <- "
-# Parenting and covariate effects on growth factors
-i ~ b_i*P7 + gi_parents_education_z*parents_education_z + gi_sex_factor_Male*sex_factor_Male + gi_race_factor_Asian*race_factor_Asian + gi_race_factor_Black*race_factor_Black + gi_race_factor_Mixed*race_factor_Mixed + gi_race_factor_Others*race_factor_Others + gi_marital_status_factor_Married*marital_status_factor_Married + gi_parents_income_couple_z*parents_income_couple_z + gi_parents_income_lone_parent_z*parents_income_lone_parent_z
-
-s ~ b_s*P7 + gs_parents_education_z*parents_education_z + gs_sex_factor_Male*sex_factor_Male + gs_race_factor_Asian*race_factor_Asian + gs_race_factor_Black*race_factor_Black + gs_race_factor_Mixed*race_factor_Mixed + gs_race_factor_Others*race_factor_Others + gs_marital_status_factor_Married*marital_status_factor_Married + gs_parents_income_couple_z*parents_income_couple_z + gs_parents_income_lone_parent_z*parents_income_lone_parent_z
-
-SC_t7 ~ b_t7*P7
-"
-
-# -------------------------------------------------------------------
-# Model 3A: Linear LCM-SR + Parenting + Controls
-# -------------------------------------------------------------------
-model_3a_syntax <- paste(
-  measurement_model,
-  parenting_model,
-  linear_growth_syntax,
-  autoregressive_structure,
-  zero_covariances,
-  structural_with_controls,
-  sep = "\n"
-)
-
-fit_model_3a <- lavaan::sem(
-  model_3a_syntax,
-  data             = merged_data,
-  ordered          = all_ordered_variables,
-  estimator        = "WLSMV",
-  parameterization = "theta",
-  std.lv           = FALSE,
-  meanstructure    = TRUE,
-  fixed.x          = TRUE
-)
-
-cat("\n=== Model 3A: Linear LCM-SR + Parenting + Controls ===\n")
-summary(fit_model_3a, fit.measures = TRUE, standardized = TRUE)
-
-fit_indices_3a <- fitMeasures(fit_model_3a,
-  c("chisq.scaled", "df", "cfi.scaled", "tli.scaled", "rmsea.scaled", "srmr"))
-print(round(fit_indices_3a, 3))
-
-# Extract parenting effects by age for controlled model
-PE_3a <- parameterEstimates(fit_model_3a)
-b_i_3a <- PE_3a$est[PE_3a$lhs == "i" & PE_3a$op == "~" & PE_3a$rhs == "P7"]
-b_s_3a <- PE_3a$est[PE_3a$lhs == "s" & PE_3a$op == "~" & PE_3a$rhs == "P7"]
-
-parenting_effect_age3_3a <- b_i_3a + b_s_3a * (-8)
-parenting_effect_age5_3a <- b_i_3a + b_s_3a * (-6)
-parenting_effect_age7_3a <- b_i_3a + b_s_3a * (-4)
-parenting_effect_age11_3a <- b_i_3a + b_s_3a * (0)
-parenting_effect_age14_3a <- b_i_3a + b_s_3a * (3)
-parenting_effect_age17_3a <- b_i_3a + b_s_3a * (6)
-
-cat("\n--- Controlled parenting effects on latent self-control by age ---\n")
-cat("Age 3: ", round(parenting_effect_age3_3a, 3), "\n")
-cat("Age 5: ", round(parenting_effect_age5_3a, 3), "\n")
-cat("Age 7: ", round(parenting_effect_age7_3a, 3), "\n")
-cat("Age 11: ", round(parenting_effect_age11_3a, 3), "\n")
-cat("Age 14: ", round(parenting_effect_age14_3a, 3), "\n")
-cat("Age 17: ", round(parenting_effect_age17_3a, 3), "\n")
-
-# Standardized effects for controlled model
-STD_3a <- standardizedSolution(fit_model_3a)
-b_i_std_3a <- STD_3a$est.std[STD_3a$lhs == "i" & STD_3a$op == "~" & STD_3a$rhs == "P7"]
-b_s_std_3a <- STD_3a$est.std[STD_3a$lhs == "s" & STD_3a$op == "~" & STD_3a$rhs == "P7"]
-b_t7_std_3a <- STD_3a$est.std[STD_3a$lhs == "SC_t7" & STD_3a$op == "~" & STD_3a$rhs == "P7"]
-
-cat("\n--- Standardized effects (controlled) ---\n")
-cat("Intercept: ", round(b_i_std_3a, 3), "\n")
-cat("Slope: ", round(b_s_std_3a, 3), "\n")
-cat("Age 7 direct: ", round(b_t7_std_3a, 3), "\n")
-
-# Extract key covariate effects (standardized)
-cat("\n--- Key covariate effects on intercept (standardized) ---\n")
-gi_sex_std <- STD_3a$est.std[STD_3a$lhs == "i" & STD_3a$op == "~" & STD_3a$rhs == "sex_factor_Male"]
-gi_race_asian_std <- STD_3a$est.std[STD_3a$lhs == "i" & STD_3a$op == "~" & STD_3a$rhs == "race_factor_Asian"]
-gi_race_black_std <- STD_3a$est.std[STD_3a$lhs == "i" & STD_3a$op == "~" & STD_3a$rhs == "race_factor_Black"]
-gi_married_std <- STD_3a$est.std[STD_3a$lhs == "i" & STD_3a$op == "~" & STD_3a$rhs == "marital_status_factor_Married"]
-
-cat("Sex (Male vs Female): ", round(gi_sex_std, 3), "\n")
-cat("Race (Asian vs White): ", round(gi_race_asian_std, 3), "\n")
-cat("Race (Black vs White): ", round(gi_race_black_std, 3), "\n")
-cat("Marital (Married vs Not Married): ", round(gi_married_std, 3), "\n")
-
-cat("\n--- Key covariate effects on slope (standardized) ---\n")
-gs_sex_std <- STD_3a$est.std[STD_3a$lhs == "s" & STD_3a$op == "~" & STD_3a$rhs == "sex_factor_Male"]
-gs_race_asian_std <- STD_3a$est.std[STD_3a$lhs == "s" & STD_3a$op == "~" & STD_3a$rhs == "race_factor_Asian"]
-gs_race_black_std <- STD_3a$est.std[STD_3a$lhs == "s" & STD_3a$op == "~" & STD_3a$rhs == "race_factor_Black"]
-gs_married_std <- STD_3a$est.std[STD_3a$lhs == "s" & STD_3a$op == "~" & STD_3a$rhs == "marital_status_factor_Married"]
-
-cat("Sex (Male vs Female): ", round(gs_sex_std, 3), "\n")
-cat("Race (Asian vs White): ", round(gs_race_asian_std, 3), "\n")
-cat("Race (Black vs White): ", round(gs_race_black_std, 3), "\n")
-cat("Marital (Married vs Not Married): ", round(gs_married_std, 3), "\n")
-
-# -------------------------------------------------------------------
-# Model 3B: Latent-Basis LCM-SR + Parenting + Controls
-# -------------------------------------------------------------------
-model_3b_syntax <- paste(
-  measurement_model,
-  parenting_model,
-  latent_basis_growth,
-  autoregressive_structure,
-  zero_covariances,
-  structural_with_controls,
-  sep = "\n"
-)
-
-fit_model_3b <- lavaan::sem(
-  model_3b_syntax,
-  data             = merged_data,
-  ordered          = all_ordered_variables,
-  estimator        = "WLSMV",
-  parameterization = "theta",
-  std.lv           = FALSE,
-  meanstructure    = TRUE,
-  fixed.x          = TRUE
-)
-
-cat("\n=== Model 3B: Latent-Basis LCM-SR + Parenting + Controls ===\n")
-summary(fit_model_3b, fit.measures = TRUE, standardized = TRUE)
-
-fit_indices_3b <- fitMeasures(fit_model_3b,
-  c("chisq.scaled", "df", "cfi.scaled", "tli.scaled", "rmsea.scaled", "srmr"))
-print(round(fit_indices_3b, 3))
-
-# Extract parenting effects for latent basis controlled model
-PE_3b <- parameterEstimates(fit_model_3b)
-b_i_3b <- PE_3b$est[PE_3b$lhs == "i" & PE_3b$op == "~" & PE_3b$rhs == "P7"]
-b_s_3b <- PE_3b$est[PE_3b$lhs == "s" & PE_3b$op == "~" & PE_3b$rhs == "P7"]
-
-# Extract latent basis loadings for effect calculation
-lb5_loading <- PE_3b$est[PE_3b$lhs == "s" & PE_3b$op == "=~" & PE_3b$rhs == "SC_t5"]
-lb7_loading <- PE_3b$est[PE_3b$lhs == "s" & PE_3b$op == "=~" & PE_3b$rhs == "SC_t7"]
-lb11_loading <- PE_3b$est[PE_3b$lhs == "s" & PE_3b$op == "=~" & PE_3b$rhs == "SC_t11"]
-lb14_loading <- PE_3b$est[PE_3b$lhs == "s" & PE_3b$op == "=~" & PE_3b$rhs == "SC_t14"]
-
-# Calculate parenting effects by age using latent basis loadings
-parenting_effect_age3_3b <- b_i_3b + b_s_3b * 0
-parenting_effect_age5_3b <- b_i_3b + b_s_3b * lb5_loading
-parenting_effect_age7_3b <- b_i_3b + b_s_3b * lb7_loading
-parenting_effect_age11_3b <- b_i_3b + b_s_3b * lb11_loading
-parenting_effect_age14_3b <- b_i_3b + b_s_3b * lb14_loading
-parenting_effect_age17_3b <- b_i_3b + b_s_3b * 1
-
-cat("\n--- Controlled parenting effects (latent basis) by age ---\n")
-cat("Age 3: ", round(parenting_effect_age3_3b, 3), "\n")
-cat("Age 5: ", round(parenting_effect_age5_3b, 3), "\n")
-cat("Age 7: ", round(parenting_effect_age7_3b, 3), "\n")
-cat("Age 11: ", round(parenting_effect_age11_3b, 3), "\n")
-cat("Age 14: ", round(parenting_effect_age14_3b, 3), "\n")
-cat("Age 17: ", round(parenting_effect_age17_3b, 3), "\n")
-
-# Standardized effects for latent basis controlled model
-STD_3b <- standardizedSolution(fit_model_3b)
-b_i_std_3b <- STD_3b$est.std[STD_3b$lhs == "i" & STD_3b$op == "~" & STD_3b$rhs == "P7"]
-b_s_std_3b <- STD_3b$est.std[STD_3b$lhs == "s" & STD_3b$op == "~" & STD_3b$rhs == "P7"]
-b_t7_std_3b <- STD_3b$est.std[STD_3b$lhs == "SC_t7" & STD_3b$op == "~" & STD_3b$rhs == "P7"]
-
-cat("\n--- Standardized effects (latent basis controlled) ---\n")
-cat("Intercept: ", round(b_i_std_3b, 3), "\n")
-cat("Slope: ", round(b_s_std_3b, 3), "\n")
-cat("Age 7 direct: ", round(b_t7_std_3b, 3), "\n")
-
-cat("\n--- Latent basis loadings ---\n")
-cat("Age 5 loading: ", round(lb5_loading, 3), "\n")
-cat("Age 7 loading: ", round(lb7_loading, 3), "\n")
-cat("Age 11 loading: ", round(lb11_loading, 3), "\n")
-cat("Age 14 loading: ", round(lb14_loading, 3), "\n")
-
-# -------------------------------------------------------------------
-# Model comparison summary
-# -------------------------------------------------------------------
-cat("\n=== MODEL COMPARISON SUMMARY ===\n")
-cat("Model 1 - Linear LCM-SR:\n")
-print(round(fit_indices_1, 3))
-cat("\nModel 2 - Latent-Basis LCM-SR:\n") 
-print(round(fit_indices_2, 3))
-cat("\nModel 3A - Linear + Controls:\n")
-print(round(fit_indices_3a, 3))
-cat("\nModel 3B - Latent-Basis + Controls:\n")
-print(round(fit_indices_3b, 3))
+# =============================================================================
+# Example usage (uncomment to test)
+# =============================================================================
+
+# Load your data (assuming it's already loaded as 'merged_data')
+# source("01_data_preparation.R")  # If you need to load the data first
+
+# Apply recoding to your dataset
+merged_data <- recode_control_variables(merged_data)
+
+# Check the recoded variables
+# summary(merged_data_recode$amacqu00)
+# summary(merged_data_recode$ahcsexa0)
+# summary(merged_data_recode$adceeaa0)
+# summary(merged_data_recode$adceeaa0_factor)
+# summary(merged_data_recode$amfcin00)
+# summary(merged_data_recode$amfcin00_factor)
+# summary(merged_data_recode$amnico00)
+# summary(merged_data_recode$amnilp00)
+
+# Save the recoded data if needed
+# saveRDS(merged_data_recode, file = file.path("/home/siyang/dissertation_folder/data", "merged_data_recode.rds"))
+
+cat("Recode control variables script loaded. Use recode_control_variables(data) to apply recoding.\n")
