@@ -193,7 +193,8 @@ fit_sr_lb_parenting <- lavaan::sem(
   estimator        = "WLSMV",
   parameterization = "theta",
   std.lv           = FALSE,
-  meanstructure    = TRUE
+  meanstructure    = TRUE,
+  sampling.weights = "weight1"
 )
 
 summary(fit_sr_lb_parenting, fit.measures = TRUE, standardized = TRUE)

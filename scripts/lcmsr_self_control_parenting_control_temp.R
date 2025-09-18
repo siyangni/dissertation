@@ -291,7 +291,8 @@ fit_model_1 <- lavaan::sem(
   estimator        = "WLSMV",
   parameterization = "theta",
   std.lv           = FALSE,
-  meanstructure    = TRUE
+  meanstructure    = TRUE,
+  sampling.weights = "weight1"
 )
 
 cat("\n=== Model 1: Linear LCM-SR + Parenting ===\n")
@@ -353,7 +354,8 @@ fit_model_2 <- lavaan::sem(
   estimator        = "WLSMV",
   parameterization = "theta",
   std.lv           = FALSE,
-  meanstructure    = TRUE
+  meanstructure    = TRUE,
+  sampling.weights = "weight1"
 )
 
 cat("\n=== Model 2: Latent-Basis LCM-SR + Parenting ===\n")
@@ -376,58 +378,75 @@ if (length(missing_covariates) > 0) {
   stop("Missing covariates: ", paste(missing_covariates, collapse = ", "))
 }
 
-# Process each covariate explicitly (assuming typical transformations)
-# Note: This section would need to be customized based on actual data structure
-
-# Check if processed covariates already exist, if not create them
+# Process each covariate explicitly based on actual data structure
 processed_covariate_names <- character(0)
 
-# Parents education (assume numeric, standardize)
-if ("parents_education" %in% names(merged_data)) {
-  if (!"parents_education_z" %in% names(merged_data)) {
-    merged_data$parents_education_z <- as.numeric(scale(merged_data$parents_education))
-    merged_data$parents_education_z[is.na(merged_data$parents_education_z)] <- 0
-  }
-  processed_covariate_names <- c(processed_covariate_names, "parents_education_z")
-}
+# 1. Parents education (numeric, standardize)
+merged_data$parents_education_z <- as.numeric(scale(merged_data$parents_education))
+merged_data$parents_education_z[is.na(merged_data$parents_education_z)] <- 0
+processed_covariate_names <- c(processed_covariate_names, "parents_education_z")
 
-# Sex factor (assume binary with levels like Male/Female)
-if ("sex_factor" %in% names(merged_data)) {
-  if (!"sex_factor_Male" %in% names(merged_data)) {
-    merged_data$sex_factor_Male <- as.numeric(merged_data$sex_factor == "Male")
-    merged_data$sex_factor_Male[is.na(merged_data$sex_factor_Male)] <- 0
-  }
-  processed_covariate_names <- c(processed_covariate_names, "sex_factor_Male")
-}
+# 2. Sex factor (factor with levels "Male", "Female" - use Female as reference)
+merged_data$sex_factor_Male <- as.numeric(merged_data$sex_factor == "Male")
+merged_data$sex_factor_Male[is.na(merged_data$sex_factor_Male)] <- 0
+processed_covariate_names <- c(processed_covariate_names, "sex_factor_Male")
 
-# Income variables (assume numeric, standardize)
-if ("parents_income_couple" %in% names(merged_data)) {
-  if (!"parents_income_couple_z" %in% names(merged_data)) {
-    merged_data$parents_income_couple_z <- as.numeric(scale(merged_data$parents_income_couple))
-    merged_data$parents_income_couple_z[is.na(merged_data$parents_income_couple_z)] <- 0
-  }
-  processed_covariate_names <- c(processed_covariate_names, "parents_income_couple_z")
-}
+# 3. Race factor (factor with levels "White", "Asian", "Black", "Mixed", "Others" - use White as reference)
+merged_data$race_factor_Asian <- as.numeric(merged_data$race_factor == "Asian")
+merged_data$race_factor_Asian[is.na(merged_data$race_factor_Asian)] <- 0
 
-if ("parents_income_lone_parent" %in% names(merged_data)) {
-  if (!"parents_income_lone_parent_z" %in% names(merged_data)) {
-    merged_data$parents_income_lone_parent_z <- as.numeric(scale(merged_data$parents_income_lone_parent))
-    merged_data$parents_income_lone_parent_z[is.na(merged_data$parents_income_lone_parent_z)] <- 0
-  }
-  processed_covariate_names <- c(processed_covariate_names, "parents_income_lone_parent_z")
-}
+merged_data$race_factor_Black <- as.numeric(merged_data$race_factor == "Black")
+merged_data$race_factor_Black[is.na(merged_data$race_factor_Black)] <- 0
 
-# For race_factor and marital_status_factor, would need to know actual levels
-# This is a placeholder - adjust based on actual factor levels in your data
-cat("\nNote: Race and marital status factors need manual specification based on actual levels in data\n")
+merged_data$race_factor_Mixed <- as.numeric(merged_data$race_factor == "Mixed")
+merged_data$race_factor_Mixed[is.na(merged_data$race_factor_Mixed)] <- 0
+
+merged_data$race_factor_Others <- as.numeric(merged_data$race_factor == "Others")
+merged_data$race_factor_Others[is.na(merged_data$race_factor_Others)] <- 0
+
+processed_covariate_names <- c(processed_covariate_names, "race_factor_Asian", 
+                               "race_factor_Black", "race_factor_Mixed", "race_factor_Others")
+
+# 4. Marital status factor (factor with levels "Not Married", "Married" - use Not Married as reference)
+merged_data$marital_status_factor_Married <- as.numeric(merged_data$marital_status_factor == "Married")
+merged_data$marital_status_factor_Married[is.na(merged_data$marital_status_factor_Married)] <- 0
+processed_covariate_names <- c(processed_covariate_names, "marital_status_factor_Married")
+
+# 5. Parents income couple (numeric, standardize)
+merged_data$parents_income_couple_z <- as.numeric(scale(merged_data$parents_income_couple))
+merged_data$parents_income_couple_z[is.na(merged_data$parents_income_couple_z)] <- 0
+processed_covariate_names <- c(processed_covariate_names, "parents_income_couple_z")
+
+# 6. Parents income lone parent (numeric, standardize)
+merged_data$parents_income_lone_parent_z <- as.numeric(scale(merged_data$parents_income_lone_parent))
+merged_data$parents_income_lone_parent_z[is.na(merged_data$parents_income_lone_parent_z)] <- 0
+processed_covariate_names <- c(processed_covariate_names, "parents_income_lone_parent_z")
+
+cat("\nProcessed covariates:\n")
+cat("- parents_education_z (standardized)\n")
+cat("- sex_factor_Male (reference: Female)\n") 
+cat("- race_factor_Asian, race_factor_Black, race_factor_Mixed, race_factor_Others (reference: White)\n")
+cat("- marital_status_factor_Married (reference: Not Married)\n")
+cat("- parents_income_couple_z (standardized)\n")
+cat("- parents_income_lone_parent_z (standardized)\n")
 
 # Create structural relations with explicit covariate terms
 # Using the processed covariates that are available
+# Create structural relations with explicit covariate terms
+# --- THIS IS THE CORRECTED VERSION ---
 structural_with_controls <- "
 # Parenting and covariate effects on growth factors
-i ~ b_i*P7 + gi_parents_education_z*parents_education_z + gi_sex_factor_Male*sex_factor_Male + gi_parents_income_couple_z*parents_income_couple_z + gi_parents_income_lone_parent_z*parents_income_lone_parent_z
+i ~ b_i*P7 + gi_parents_education_z*parents_education_z + gi_sex_factor_Male*sex_factor_Male + 
+    gi_parents_income_couple_z*parents_income_couple_z + gi_parents_income_lone_parent_z*parents_income_lone_parent_z +
+    gi_race_factor_Asian*race_factor_Asian + gi_race_factor_Black*race_factor_Black + 
+    gi_race_factor_Mixed*race_factor_Mixed + gi_race_factor_Others*race_factor_Others +
+    gi_marital_status_factor_Married*marital_status_factor_Married
 
-s ~ b_s*P7 + gs_parents_education_z*parents_education_z + gs_sex_factor_Male*sex_factor_Male + gs_parents_income_couple_z*parents_income_couple_z + gs_parents_income_lone_parent_z*parents_income_lone_parent_z
+s ~ b_s*P7 + gs_parents_education_z*parents_education_z + gs_sex_factor_Male*sex_factor_Male + 
+    gs_parents_income_couple_z*parents_income_couple_z + gs_parents_income_lone_parent_z*parents_income_lone_parent_z +
+    gs_race_factor_Asian*race_factor_Asian + gs_race_factor_Black*race_factor_Black + 
+    gs_race_factor_Mixed*race_factor_Mixed + gs_race_factor_Others*race_factor_Others +
+    gs_marital_status_factor_Married*marital_status_factor_Married
 
 SC_t7 ~ b_t7*P7
 "
@@ -453,7 +472,8 @@ fit_model_3a <- lavaan::sem(
   parameterization = "theta",
   std.lv           = FALSE,
   meanstructure    = TRUE,
-  fixed.x          = TRUE
+  fixed.x          = TRUE,
+  sampling.weights = "weight1"
 )
 
 cat("\n=== Model 3A: Linear LCM-SR + Parenting + Controls ===\n")
@@ -484,7 +504,8 @@ fit_model_3b <- lavaan::sem(
   parameterization = "theta",
   std.lv           = FALSE,
   meanstructure    = TRUE,
-  fixed.x          = TRUE
+  fixed.x          = TRUE,
+  sampling.weights = "weight1"
 )
 
 cat("\n=== Model 3B: Latent-Basis LCM-SR + Parenting + Controls ===\n")
