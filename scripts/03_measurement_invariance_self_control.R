@@ -8,8 +8,7 @@ library(lavaan)
 library(semTools)
 
 ages <- c(3, 5, 7, 11, 14, 17)
-item_suffixes <- c("task_completion","distracted","fidgeting","think_act",
-                   "restless","temper","obedient","lying")
+item_suffixes <- c("task_completion", "distracted", "fidgeting", "think_act", "temper", "obedient", "lying")
 
 # 1) Build the exact intersection of indicators present at all ages
 exists_at_all <- function(suf) all(paste0("sc", ages, "_", suf) %in% names(merged_data))
@@ -132,23 +131,33 @@ print(lavTestLRT(fit_thresh, fit_metricCat))
 print(lavInspect(fit_config, "options")$test)
 
 # 9) Score tests to locate noninvariant thresholds/loadings (targeted freeing)
-## Robust score-test table extraction that works across lavaan versions
-sc <- lavTestScore(fit_metricCat)   # or fit of interest under constraints
-uni <- tryCatch(as.data.frame(sc$uni), error = function(e) NULL)
 
-if (!is.null(uni) && nrow(uni) > 0) {
-  stat_candidates <- c("mi","X2","stat","LM.Stat","LMStat","score","Test.Stat")
-  stat_col <- intersect(stat_candidates, names(uni))
-  if (length(stat_col) == 0L) {
-    message("Score test found but no recognizable statistic column; showing first rows.")
-    print(head(uni, 20))
-  } else {
-    stat_col <- stat_col[1]
-    ord <- order(uni[[stat_col]], decreasing = TRUE)
-    keep <- intersect(c("lhs","op","rhs","group", stat_col, "epc","epc.lv"), names(uni))
-    print(head(uni[ord, keep, drop = FALSE], 50))
-  }
-} else {
-  message("No score-test results returned.")
-}
+# 1) Get the uni table (as you did)
+sc    <- lavTestScore(fit_metricCat)
+uni   <- as.data.frame(sc$uni)
 
+# 2) Parameter table with IDs; keep only free params (free > 0)
+pt <- parameterTable(fit_metricCat)
+pt$pid <- paste0(".p", pt$free, ".")      # e.g., ".p5."
+pt_free <- subset(pt, free > 0L,
+                  select = c("pid","lhs","op","rhs","group","block","label"))
+
+# 3) Keep only equality constraints from the score test (op == "==")
+uni_eq <- subset(uni, op == "==", select = c("lhs","op","rhs", "X2"))
+
+# 4) Join each side of the equality to the parameter table to see what they are
+names(pt_free) <- paste0(names(pt_free), "_L")   # left side
+mL <- merge(uni_eq, pt_free, by.x = "lhs", by.y = "pid_L", all.x = TRUE)
+
+names(pt_free) <- sub("_L$", "_R", names(pt_free))   # right side
+mLR <- merge(mL, pt_free, by.x = "rhs", by.y = "pid_R", all.x = TRUE)
+
+# 5) Clean view of the worst offenders
+worst <- mLR[order(-mLR$X2), 
+             c("X2",
+               "lhs","rhs",
+               "lhs_L","op_L","rhs_L","group_L","block_L","label_L",
+               "lhs_R","op_R","rhs_R","group_R","block_R","label_R")]
+
+# Peek at the top 40 misfitting equalities
+print(head(worst, 40))

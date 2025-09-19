@@ -6,8 +6,7 @@ p_load(semTools)
 
 # --- Ages and item suffixes (self-control)
 ages <- c(3, 5, 7, 11, 14, 17)
-item_suffixes <- c("task_completion","distracted","fidgeting","think_act",
-                   "restless","temper","obedient","lying")
+item_suffixes <- c("task_completion", "distracted", "fidgeting", "think_act", "temper", "obedient", "lying")
 
 # --- Ensure intersection of indicators present at all ages (no silent misalignment)
 exists_at_all <- function(suf) all(paste0("sc", ages, "_", suf) %in% names(merged_data))
@@ -32,19 +31,20 @@ longIndNames <- setNames(
   common_suf
 )
 
-# --- Strong longitudinal MI for ordinals: thresholds + loadings, correlated uniqueness across time
+# --- Full longitudinal MI for ordinals: thresholds + loadings, correlated uniqueness across time
 ME <- measEq.syntax(
   configural.model = configural_model,
   data             = merged_data,
   ordered          = ordered_vars,
   parameterization = "theta",
-  ID.fac           = "UL",
+  ID.fac           = "std.lv",
   ID.cat           = "Wu.Estabrook.2016",
   longFacNames     = longFacNames,
   longIndNames     = longIndNames,
   long.equal       = c("thresholds","loadings"),
-  auto             = 1L,        # (keeps your prior setting)
-  return.fit       = FALSE
+  auto             = 1L,       
+  return.fit       = FALSE,
+  estimator        = "WLSMV"
 )
 
 model_mi <- as.character(ME, single = TRUE)  # measurement part + constraints
@@ -119,7 +119,7 @@ fit_sr_parenting <- lavaan::sem(
   model_sr_parenting,
   data             = merged_data,
   ordered          = ordered_all,
-  estimator        = "ULSMV",        # fast & robust for many ordinals
+  estimator        = "WLSMV",     
   parameterization = "theta",
   std.lv           = FALSE,
   meanstructure    = TRUE
@@ -185,6 +185,7 @@ fit_sr_lb_parenting <- lavaan::sem(
 )
 
 summary(fit_sr_lb_parenting, fit.measures = TRUE, standardized = TRUE)
+
 print(round(fitMeasures(fit_sr_lb_parenting,
       c("chisq.scaled","df","cfi.scaled","tli.scaled","rmsea.scaled","srmr")), 3))
 
@@ -341,7 +342,7 @@ fit_sr_lb_parenting_ctrl <- lavaan::sem(
   model_sr_lb_parenting_ctrl,
   data             = merged_data,
   ordered          = ordered_all,
-  estimator        = "LSMV",
+  estimator        = "WLSMV",
   parameterization = "theta",
   std.lv           = FALSE,
   meanstructure    = TRUE,
@@ -352,3 +353,6 @@ cat("\n--- Latent-basis LCM-SR + controls: fit ---\n")
 print(summary(fit_sr_lb_parenting_ctrl, fit.measures = TRUE, standardized = TRUE))
 print(round(fitMeasures(fit_sr_lb_parenting_ctrl,
       c("chisq.scaled","df","cfi.scaled","tli.scaled","rmsea.scaled","srmr")), 3))
+
+
+#

@@ -7,22 +7,22 @@ p_load(lavaan, semTools)
 expected_sc_variables <- c(
   # Age 3
   "sc3_task_completion", "sc3_distracted", "sc3_fidgeting", "sc3_think_act",
-  "sc3_restless", "sc3_temper", "sc3_obedient", "sc3_lying",
+  "sc3_temper", "sc3_obedient", "sc3_lying",
   # Age 5  
   "sc5_task_completion", "sc5_distracted", "sc5_fidgeting", "sc5_think_act",
-  "sc5_restless", "sc5_temper", "sc5_obedient", "sc5_lying",
+  "sc5_temper", "sc5_obedient", "sc5_lying",
   # Age 7
   "sc7_task_completion", "sc7_distracted", "sc7_fidgeting", "sc7_think_act", 
-  "sc7_restless", "sc7_temper", "sc7_obedient", "sc7_lying",
+  "sc7_temper", "sc7_obedient", "sc7_lying",
   # Age 11
   "sc11_task_completion", "sc11_distracted", "sc11_fidgeting", "sc11_think_act",
-  "sc11_restless", "sc11_temper", "sc11_obedient", "sc11_lying",
+  "sc11_temper", "sc11_obedient", "sc11_lying",
   # Age 14
   "sc14_task_completion", "sc14_distracted", "sc14_fidgeting", "sc14_think_act",
-  "sc14_restless", "sc14_temper", "sc14_obedient", "sc14_lying",
+  "sc14_temper", "sc14_obedient", "sc14_lying",
   # Age 17
   "sc17_task_completion", "sc17_distracted", "sc17_fidgeting", "sc17_think_act",
-  "sc17_restless", "sc17_temper", "sc17_obedient", "sc17_lying"
+  "sc17_temper", "sc17_obedient", "sc17_lying"
 )
 
 
@@ -44,10 +44,6 @@ think_act_available <- all(c("sc3_think_act", "sc5_think_act",
                              "sc7_think_act", "sc11_think_act", 
                              "sc14_think_act", "sc17_think_act") %in% names(merged_data))
 
-restless_available <- all(c("sc3_restless", "sc5_restless", 
-                            "sc7_restless", "sc11_restless", 
-                            "sc14_restless", "sc17_restless") %in% names(merged_data))
-
 temper_available <- all(c("sc3_temper", "sc5_temper", 
                           "sc7_temper", "sc11_temper", 
                           "sc14_temper", "sc17_temper") %in% names(merged_data))
@@ -60,33 +56,33 @@ lying_available <- all(c("sc3_lying", "sc5_lying",
                          "sc7_lying", "sc11_lying", 
                          "sc14_lying", "sc17_lying") %in% names(merged_data))
 
-all_eight_available <- all(c(
+all_seven_available <- all(c(
   task_completion_available, distracted_available, fidgeting_available, think_act_available,
-  restless_available, temper_available, obedient_available, lying_available
+  temper_available, obedient_available, lying_available
 ))
 
-if (!all_eight_available) {
-  stop("All 8 self-control indicators must be available across all ages: task_completion, distracted, fidgeting, think_act, restless, temper, obedient, lying.")
+if (!all_seven_available) {
+  stop("All 7 self-control indicators must be available across all ages: task_completion, distracted, fidgeting, think_act, temper, obedient, lying.")
 }
 
 # --- Build measurement model explicitly based on available items
 configural_model <- "
-SC_t3 =~ sc3_task_completion + sc3_distracted + sc3_fidgeting + sc3_think_act + sc3_restless + sc3_temper + sc3_obedient + sc3_lying
-SC_t5 =~ sc5_task_completion + sc5_distracted + sc5_fidgeting + sc5_think_act + sc5_restless + sc5_temper + sc5_obedient + sc5_lying
-SC_t7 =~ sc7_task_completion + sc7_distracted + sc7_fidgeting + sc7_think_act + sc7_restless + sc7_temper + sc7_obedient + sc7_lying
-SC_t11 =~ sc11_task_completion + sc11_distracted + sc11_fidgeting + sc11_think_act + sc11_restless + sc11_temper + sc11_obedient + sc11_lying
-SC_t14 =~ sc14_task_completion + sc14_distracted + sc14_fidgeting + sc14_think_act + sc14_restless + sc14_temper + sc14_obedient + sc14_lying
-SC_t17 =~ sc17_task_completion + sc17_distracted + sc17_fidgeting + sc17_think_act + sc17_restless + sc17_temper + sc17_obedient + sc17_lying
+SC_t3 =~ sc3_task_completion + sc3_distracted + sc3_fidgeting + sc3_think_act + sc3_temper + sc3_obedient + sc3_lying
+SC_t5 =~ sc5_task_completion + sc5_distracted + sc5_fidgeting + sc5_think_act + sc5_temper + sc5_obedient + sc5_lying
+SC_t7 =~ sc7_task_completion + sc7_distracted + sc7_fidgeting + sc7_think_act + sc7_temper + sc7_obedient + sc7_lying
+SC_t11 =~ sc11_task_completion + sc11_distracted + sc11_fidgeting + sc11_think_act + sc11_temper + sc11_obedient + sc11_lying
+SC_t14 =~ sc14_task_completion + sc14_distracted + sc14_fidgeting + sc14_think_act + sc14_temper + sc14_obedient + sc14_lying
+SC_t17 =~ sc17_task_completion + sc17_distracted + sc17_fidgeting + sc17_think_act + sc17_temper + sc17_obedient + sc17_lying
 "
 
-# Variables for lavaan ordered specification (all 8 indicators across 6 waves)
+# Variables for lavaan ordered specification (all 7 indicators across 6 waves)
 all_sc_variables <- c(
-  "sc3_task_completion", "sc3_distracted", "sc3_fidgeting", "sc3_think_act", "sc3_restless", "sc3_temper", "sc3_obedient", "sc3_lying",
-  "sc5_task_completion", "sc5_distracted", "sc5_fidgeting", "sc5_think_act", "sc5_restless", "sc5_temper", "sc5_obedient", "sc5_lying",
-  "sc7_task_completion", "sc7_distracted", "sc7_fidgeting", "sc7_think_act", "sc7_restless", "sc7_temper", "sc7_obedient", "sc7_lying",
-  "sc11_task_completion", "sc11_distracted", "sc11_fidgeting", "sc11_think_act", "sc11_restless", "sc11_temper", "sc11_obedient", "sc11_lying",
-  "sc14_task_completion", "sc14_distracted", "sc14_fidgeting", "sc14_think_act", "sc14_restless", "sc14_temper", "sc14_obedient", "sc14_lying",
-  "sc17_task_completion", "sc17_distracted", "sc17_fidgeting", "sc17_think_act", "sc17_restless", "sc17_temper", "sc17_obedient", "sc17_lying"
+  "sc3_task_completion", "sc3_distracted", "sc3_fidgeting", "sc3_think_act", "sc3_temper", "sc3_obedient", "sc3_lying",
+  "sc5_task_completion", "sc5_distracted", "sc5_fidgeting", "sc5_think_act", "sc5_temper", "sc5_obedient", "sc5_lying",
+  "sc7_task_completion", "sc7_distracted", "sc7_fidgeting", "sc7_think_act", "sc7_temper", "sc7_obedient", "sc7_lying",
+  "sc11_task_completion", "sc11_distracted", "sc11_fidgeting", "sc11_think_act", "sc11_temper", "sc11_obedient", "sc11_lying",
+  "sc14_task_completion", "sc14_distracted", "sc14_fidgeting", "sc14_think_act", "sc14_temper", "sc14_obedient", "sc14_lying",
+  "sc17_task_completion", "sc17_distracted", "sc17_fidgeting", "sc17_think_act", "sc17_temper", "sc17_obedient", "sc17_lying"
 )
 
 # Set up for measurement invariance
@@ -96,28 +92,36 @@ longIndNames <- list(
   distracted = c("sc3_distracted", "sc5_distracted", "sc7_distracted", "sc11_distracted", "sc14_distracted", "sc17_distracted"),
   fidgeting = c("sc3_fidgeting", "sc5_fidgeting", "sc7_fidgeting", "sc11_fidgeting", "sc14_fidgeting", "sc17_fidgeting"),
   think_act = c("sc3_think_act", "sc5_think_act", "sc7_think_act", "sc11_think_act", "sc14_think_act", "sc17_think_act"),
-  restless = c("sc3_restless", "sc5_restless", "sc7_restless", "sc11_restless", "sc14_restless", "sc17_restless"),
   temper = c("sc3_temper", "sc5_temper", "sc7_temper", "sc11_temper", "sc14_temper", "sc17_temper"),
   obedient = c("sc3_obedient", "sc5_obedient", "sc7_obedient", "sc11_obedient", "sc14_obedient", "sc17_obedient"),
   lying = c("sc3_lying", "sc5_lying", "sc7_lying", "sc11_lying", "sc14_lying", "sc17_lying")
 )
 
-# --- Strong longitudinal measurement invariance
+
+# --- Partial longitudinal measurement invariance
+partial_list <- list(
+  loadings = c("obedient", "task_completion", "think_act", "lying")
+)
+
+# --- Partial longitudinal MI for ordinals: thresholds + loadings, correlated uniqueness across time
 ME <- measEq.syntax(
   configural.model = configural_model,
   data             = merged_data,
-  ordered          = all_sc_variables,
+  ordered          = ordered_vars,
   parameterization = "theta",
-  ID.fac           = "UL", 
+  ID.fac           = "std.lv",
   ID.cat           = "Wu.Estabrook.2016",
   longFacNames     = longFacNames,
   longIndNames     = longIndNames,
-  long.equal       = c("thresholds", "loadings"),
-  auto             = 1L,
-  return.fit       = FALSE
+  long.equal       = c("thresholds","loadings"),
+  long.partial          = partial_list,
+  auto             = 1L,        # (keeps your prior setting)
+  return.fit       = FALSE,
+  estimator        = "WLSMV"
 )
 
 measurement_model <- as.character(ME, single = TRUE)
+
 
 # --- Autoregressive structure (explicit paths)
 autoregressive_structure <- "
@@ -391,20 +395,20 @@ cat("- marital_status_factor_Married (reference: Not Married)\n")
 cat("- parents_income_couple_z (standardized)\n")
 cat("- parents_income_lone_parent_z (standardized)\n")
 
+print(all_ordered_variables)
+
 # Create structural relations with explicit covariate terms
 # Using the processed covariates that are available
 # Create structural relations with explicit covariate terms
-# --- THIS IS THE CORRECTED VERSION ---
+
 structural_with_controls <- "
 # Parenting and covariate effects on growth factors
-i ~ b_i*P7 + gi_parents_education_z*parents_education_z + gi_sex_factor_Male*sex_factor_Male + 
-    gi_parents_income_couple_z*parents_income_couple_z + gi_parents_income_lone_parent_z*parents_income_lone_parent_z +
+i ~ b_i*P7 + gi_parents_education_z*parents_education_z + gi_sex_factor_Male*sex_factor_Male +
     gi_race_factor_Asian*race_factor_Asian + gi_race_factor_Black*race_factor_Black + 
     gi_race_factor_Mixed*race_factor_Mixed + gi_race_factor_Others*race_factor_Others +
     gi_marital_status_factor_Married*marital_status_factor_Married
 
 s ~ b_s*P7 + gs_parents_education_z*parents_education_z + gs_sex_factor_Male*sex_factor_Male + 
-    gs_parents_income_couple_z*parents_income_couple_z + gs_parents_income_lone_parent_z*parents_income_lone_parent_z +
     gs_race_factor_Asian*race_factor_Asian + gs_race_factor_Black*race_factor_Black + 
     gs_race_factor_Mixed*race_factor_Mixed + gs_race_factor_Others*race_factor_Others +
     gs_marital_status_factor_Married*marital_status_factor_Married

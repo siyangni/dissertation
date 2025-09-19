@@ -58,7 +58,7 @@ recode_control_variables <- function(data) {
   # 2,3 as married (1)
   data_recode$marital_status <- case_when(
     data_recode$amfcin00 %in% c(9, 8, -1) ~ NA_real_,
-    data_recode$amfcin00 %in% c(1, 4, 5, 6) ~ 0,  # not_married
+    data_recode$c %in% c(1, 4, 5, 6) ~ 0,  # not_married
     data_recode$amfcin00 %in% c(2, 3) ~ 1,  # married
     TRUE ~ NA_real_  # Any other values as NA
   )
