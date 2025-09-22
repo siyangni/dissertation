@@ -1,8 +1,8 @@
 # =============================================================================
-# Recoding self-control to dichotomies
+# Recoding self-control variables
 # =============================================================================
-# Positive items: 1 -> 0; 2 or 3 -> 1
-# Negative items: 3 -> 0; 1 or 2 -> 1
+# Positive items: 1 -> 0; 2 -> 1; 3 -> 2
+# Negative items: 3 -> 0; 1 -> 2; 2 -> 1
 # Non {1,2,3} values -> NA
 # =============================================================================
 library(pacman)
@@ -51,12 +51,12 @@ source_vars_negative <- list(
 )
 
 # ---------------------------------------------------
-# 2) Loop over all ages and recode to 0/1 in-place
+# 2) Loop over all ages and recode variables
 # ---------------------------------------------------
 ages <- c(3, 5, 7, 11, 14, 17)
 
 for (age in ages) {
-  message("\n=== Dichotomizing age ", age, " ===")
+  message("\n=== Recoding age ", age, " ===")
 
   # Build a tidy mapping for this age (only variables present in df)
   map_pos <- purrr::imap_dfr(source_vars_positive, ~tibble(
@@ -79,7 +79,7 @@ for (age in ages) {
   }
 
   # -----------------------------
-  # POSITIVE items: 1 -> 0; 2/3 -> 1
+  # POSITIVE items: 1 -> 0; 2 -> 1; 3 -> 2
   # -----------------------------
   pos_vars <- mapping %>% filter(polarity == "positive") %>% pull(var)
 
@@ -101,21 +101,22 @@ for (age in ages) {
           )
           x_num[!(x_num %in% c(1,2,3))] <- NA_real_
           out <- dplyr::case_when(
-            is.na(x_num)      ~ NA_real_,
-            x_num == 1        ~ 0,
-            x_num %in% c(2,3) ~ 1
+            is.na(x_num) ~ NA_real_,
+            x_num == 1   ~ 0,
+            x_num == 2   ~ 1,
+            x_num == 3   ~ 2
           )
           as.integer(out)
         },
         .names = "tmp__{col}"
       ))
-    message("Dichotomized positives: ", paste(pos_vars, collapse = ", "))
+    message("Recoded positives: ", paste(pos_vars, collapse = ", "))
   } else {
     message("No positive source variables found for age ", age, ".")
   }
 
   # -----------------------------
-  # NEGATIVE items: 3 -> 0; 1/2 -> 1
+  # NEGATIVE items: 3 -> 0; 1 -> 2; 2 -> 1
   # -----------------------------
   neg_vars <- mapping %>% filter(polarity == "negative") %>% pull(var)
 
@@ -136,15 +137,16 @@ for (age in ages) {
           )
           x_num[!(x_num %in% c(1,2,3))] <- NA_real_
           out <- dplyr::case_when(
-            is.na(x_num)      ~ NA_real_,
-            x_num == 3        ~ 0,
-            x_num %in% c(1,2) ~ 1
+            is.na(x_num) ~ NA_real_,
+            x_num == 3   ~ 0,
+            x_num == 1   ~ 2,
+            x_num == 2   ~ 1
           )
           as.integer(out)
         },
         .names = "tmp__{col}"
       ))
-    message("Dichotomized negatives: ", paste(neg_vars, collapse = ", "))
+    message("Recoded negatives: ", paste(neg_vars, collapse = ", "))
   } else {
     message("No negative source variables found for age ", age, ".")
   }
@@ -169,7 +171,7 @@ for (age in ages) {
   # ------------------------------------------
   wanted <- mapping$target
   have   <- sum(wanted %in% names(df))
-  message("Age ", age, ": ", have, " / ", length(wanted), " dichotomous variables present.")
+  message("Age ", age, ": ", have, " / ", length(wanted), " recoded variables present.")
 
   created_cols <- wanted[wanted %in% names(df)]
   if (length(created_cols)) {
@@ -185,4 +187,4 @@ merged_data <- df
 
 # Final overall count
 total_new <- sum(grepl("^sc(3|5|7|11|14|17)_", names(merged_data)))
-message("\n=== All ages processed. Total new dichotomous variables: ", total_new, " ===")
+message("\n=== All ages processed. Total new recoded variables: ", total_new, " ===")
