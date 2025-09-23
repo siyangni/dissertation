@@ -801,7 +801,7 @@ print(lat_means, n = Inf)
 fit_scalar_eqmeans <- cfa(onefactor_model, data = sc_long, group = "age",
                           ordered = keys, estimator = "WLSMV",
                           parameterization = "theta", std.lv = TRUE,
-                          group.equal = c("thresholds", "loadings", "lv.means"))
+                          group.equal = c("thresholds", "loadings", "means"))
 eq_tbl <- tibble(
   model = c("scalar_thr+load", "scalar+equal_lv.means"),
   cfi = c(fitMeasures(fit_scalar, "cfi"), fitMeasures(fit_scalar_eqmeans, "cfi")),
@@ -912,10 +912,10 @@ list_score_violations_thresholds <- function(fit, top_n = 10, cutoff = 3.84) {
 }
 
 message("\nScore tests for equality constraints (loadings) — strongest release candidates:")
-print(list_score_violations_loadings(fit_scalar, top_n = 12), n = Inf)
+print(list_score_violations_loadings(fit_scalar, top_n = 12))
 
 message("\nScore tests for equality constraints (thresholds) — strongest release candidates:")
-print(list_score_violations_thresholds(fit_thr, top_n = 12), n = Inf)
+print(list_score_violations_thresholds(fit_thr, top_n = 12))
 
 # -------------------------
 # 5) (Optional) Partial invariance refits
@@ -938,5 +938,17 @@ print(list_score_violations_thresholds(fit_thr, top_n = 12), n = Inf)
 #                      ordered = keys, estimator = "WLSMV", parameterization = "theta", std.lv = TRUE)
 # fitMeasures(fit_scalar_pi, c("cfi","rmsea","srmr"))
 
+# -------------------------
+# 6) Helper function: score_table_equalities (combines threshold and loading score tests)
+# -------------------------
+score_table_equalities <- function(fit, type = c("thresholds", "loadings"), cutoff = 3.84, top_n = 15) {
+  type <- match.arg(type)
+  
+  if (type == "thresholds") {
+    return(list_score_violations_thresholds(fit, top_n = top_n, cutoff = cutoff))
+  } else {
+    return(list_score_violations_loadings(fit, top_n = top_n, cutoff = cutoff))
+  }
+}
 
-
+# End of script
