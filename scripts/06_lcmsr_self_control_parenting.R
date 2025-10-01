@@ -200,3 +200,4 @@ fit_sr_lb_parenting <- lavaan::sem(
 summary(fit_sr_lb_parenting, fit.measures = TRUE, standardized = TRUE)
 print(round(fitMeasures(fit_sr_lb_parenting,
       c("chisq.scaled","df","cfi.scaled","tli.scaled","rmsea.scaled","srmr")), 3))
+
