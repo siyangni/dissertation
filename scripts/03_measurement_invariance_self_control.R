@@ -2,6 +2,9 @@
 # (c) Measurement invariance skeleton across ages (ordered, WLSMV)
 #     Using semTools::measEq.syntax with Wu & Estabrook (2016) ID.
 # =====================================================================
+library(pacman)
+p_load(tidyverse, psych, lavaan, semTools, GPArotation,
+       BifactorIndicesCalculator, EFAtools)
 
 # 1) Build a long data set: one row per person per age, columns = the 8 items
 #    We assume rows represent the same children across ages (IDs are row numbers).

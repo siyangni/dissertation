@@ -1,6 +1,6 @@
 library(pacman)
 # Load all necessary packages. dplyr and stringr are part of tidyverse.
-p_load(tidyverse, haven, psych, lavaan)
+p_load(tidyverse, psych, lavaan)
 
 # --- Define Global Constants and Helper Functions ---
 
@@ -80,7 +80,13 @@ recode_parenting <- function(dat) {
     "dmschca0", "dmenlia0", "dmexafa0", "dcsc0019", "dcsc0020",
     # Involvement
     "dmreofa0", "dmsitsa0", "dmplmua0", "dmpamaa0", "dmactia0", 
-    "dmgamea0", "dmwalka0", "BEDR", "LOOK"
+    "dmgamea0", "dmwalka0", "BEDR", "LOOK",
+    # Additional parenting/behavioral variables
+    "epdibn00", "epditr00", "epdire00",
+    "fpwhet00", "fpwhot00", "fpwhat00",
+    "fcoutw00", "fcotwi00", "fcotwd00",
+    "gcoutw00",
+    "cmdibna0", "cmditra0", "cmdirea0"
   )
   
   # Find multi-select evening meal columns
@@ -95,10 +101,24 @@ recode_parenting <- function(dat) {
     return(dat)
   }
   
-  # --- 2. Handle missing codes and haven labels ---
+  # --- 2. Remove any pre-existing derived variables to prevent conflicts ---
+  cat("Removing any pre-existing derived variables...\n")
+  derived_vars_to_remove <- c(
+    "evening_meal_parent_presence", "evening_meal_parent_presence_single", 
+    "evening_meal_parent_presence_multi"
+  )
+  existing_derived <- intersect(derived_vars_to_remove, names(dat))
+  if (length(existing_derived) > 0) {
+    d <- dat %>% select(-all_of(existing_derived))
+    cat("Removed", length(existing_derived), "pre-existing derived variables\n")
+  } else {
+    d <- dat
+  }
+  
+  # --- 3. Handle missing codes and haven labels ---
   # Process only the columns we need, not 'across(everything())'
   cat("Cleaning missing codes and labels...\n")
-  d <- dat %>%
+  d <- d %>%
     mutate(across(all_of(existing_source_vars), ~{
       vals <- .x
       if (inherits(vals, "haven_labelled")) {
@@ -108,7 +128,7 @@ recode_parenting <- function(dat) {
       ifelse(vals %in% missing_codes, NA_real_, as.numeric(vals))
     }))
   
-  # --- 3. Recode Variables ---
+  # --- 4. Recode Variables ---
   
   # 1) Monitoring and structure (Complex, custom recodes)
   if ("dmtvrla0" %in% names(d)) d <- d %>% mutate(tv_rules_time  = case_when(dmtvrla0 == 1 ~ 1, dmtvrla0 == 2 ~ 0, TRUE ~ NA_real_))
@@ -211,9 +231,6 @@ recode_parenting <- function(dat) {
   # 2) Sanctioning (Using clean mapping)
   sanction_mapping <- list(
     "dmditea0" = list(name = "tell_off",         fun = recode_app),
-    "dmditra0" = list(name = "take_away_treats", fun = recode_app),
-    "dmdibna0" = list(name = "timeout",          fun = recode_app),
-    "dmdirea0" = list(name = "reason",           fun = recode_app),
     "dmdisma0" = list(name = "smack_rev",        fun = recode_rev),
     "dmdisha0" = list(name = "shout_rev",        fun = recode_rev),
     "dmdibra0" = list(name = "bribe_rev",        fun = recode_rev),
@@ -254,14 +271,192 @@ recode_parenting <- function(dat) {
     }
   }
 
-  # --- 4. Create Subindexes ---
+  # 5) Additional recoding for specific parenting/behavioral variables
+  
+  # Recode dmdibna0, dmditra0, dmdirea0 for age 7: negatives and 6 -> NA, subtract 1 from others
+  if ("dmdibna0" %in% names(d)) {
+    d <- d %>% mutate(ndmdibna0 = case_when(
+      dmdibna0 < 0 | dmdibna0 == 6 ~ NA_real_,
+      !is.na(dmdibna0) ~ dmdibna0 - 1,
+      TRUE ~ NA_real_
+    ))
+  }
+  
+  if ("dmditra0" %in% names(d)) {
+    d <- d %>% mutate(ndmditra0 = case_when(
+      dmditra0 < 0 | dmditra0 == 6 ~ NA_real_,
+      !is.na(dmditra0) ~ dmditra0 - 1,
+      TRUE ~ NA_real_
+    ))
+  }
+  
+  if ("dmdirea0" %in% names(d)) {
+    d <- d %>% mutate(ndmdirea0 = case_when(
+      dmdirea0 < 0 | dmdirea0 == 6 ~ NA_real_,
+      !is.na(dmdirea0) ~ dmdirea0 - 1,
+      TRUE ~ NA_real_
+    ))
+  }
+  
+  # Recode epdibn00, epditr00, epdire00 for age 11: negatives and 6 -> NA, subtract 1 from others
+  if ("epdibn00" %in% names(d)) {
+    d <- d %>% mutate(nepdibn00 = case_when(
+      epdibn00 < 0 | epdibn00 == 6 ~ NA_real_,
+      !is.na(epdibn00) ~ epdibn00 - 1,
+      TRUE ~ NA_real_
+    ))
+  }
+  
+  if ("epditr00" %in% names(d)) {
+    d <- d %>% mutate(nepditr00 = case_when(
+      epditr00 < 0 | epditr00 == 6 ~ NA_real_,
+      !is.na(epditr00) ~ epditr00 - 1,
+      TRUE ~ NA_real_
+    ))
+  }
+  
+  if ("epdire00" %in% names(d)) {
+    d <- d %>% mutate(nepdire00 = case_when(
+      epdire00 < 0 | epdire00 == 6 ~ NA_real_,
+      !is.na(epdire00) ~ epdire00 - 1,
+      TRUE ~ NA_real_
+    ))
+  }
+  
+  # Recode fpwhet00, fpwhot00, fpwhat00: begin from 0, reverse code, negatives -> NA
+  # Assuming original scale is 1-5 or similar
+  if ("fpwhet00" %in% names(d)) {
+    d <- d %>% mutate(nfpwhet00 = case_when(
+      fpwhet00 < 0 ~ NA_real_,
+      !is.na(fpwhet00) ~ {
+        max_val <- max(fpwhet00[fpwhet00 >= 0], na.rm = TRUE)
+        max_val - fpwhet00
+      },
+      TRUE ~ NA_real_
+    ))
+  }
+  
+  if ("fpwhot00" %in% names(d)) {
+    d <- d %>% mutate(nfpwhot00 = case_when(
+      fpwhot00 < 0 ~ NA_real_,
+      !is.na(fpwhot00) ~ {
+        max_val <- max(fpwhot00[fpwhot00 >= 0], na.rm = TRUE)
+        max_val - fpwhot00
+      },
+      TRUE ~ NA_real_
+    ))
+  }
+  
+  if ("fpwhat00" %in% names(d)) {
+    d <- d %>% mutate(nfpwhat00 = case_when(
+      fpwhat00 < 0 ~ NA_real_,
+      !is.na(fpwhat00) ~ {
+        max_val <- max(fpwhat00[fpwhat00 >= 0], na.rm = TRUE)
+        max_val - fpwhat00
+      },
+      TRUE ~ NA_real_
+    ))
+  }
+  
+  # Recode fcoutw00, fcotwi00, fcotwd00: begin from 0, reverse code, negatives -> NA
+  if ("fcoutw00" %in% names(d)) {
+    d <- d %>% mutate(nfcoutw00 = case_when(
+      fcoutw00 < 0 ~ NA_real_,
+      !is.na(fcoutw00) ~ {
+        max_val <- max(fcoutw00[fcoutw00 >= 0], na.rm = TRUE)
+        max_val - fcoutw00
+      },
+      TRUE ~ NA_real_
+    ))
+  }
+  
+  if ("fcotwi00" %in% names(d)) {
+    d <- d %>% mutate(nfcotwi00 = case_when(
+      fcotwi00 < 0 ~ NA_real_,
+      !is.na(fcotwi00) ~ {
+        max_val <- max(fcotwi00[fcotwi00 >= 0], na.rm = TRUE)
+        max_val - fcotwi00
+      },
+      TRUE ~ NA_real_
+    ))
+  }
+  
+  if ("fcotwd00" %in% names(d)) {
+    d <- d %>% mutate(nfcotwd00 = case_when(
+      fcotwd00 < 0 ~ NA_real_,
+      !is.na(fcotwd00) ~ {
+        max_val <- max(fcotwd00[fcotwd00 >= 0], na.rm = TRUE)
+        max_val - fcotwd00
+      },
+      TRUE ~ NA_real_
+    ))
+  }
+  
+  # Recode gcoutw00: reverse code, 5 and 7 -> NA
+  if ("gcoutw00" %in% names(d)) {
+    d <- d %>% mutate(ngcoutw00 = case_when(
+      gcoutw00 %in% c(5, 7) ~ NA_real_,
+      !is.na(gcoutw00) ~ {
+        max_val <- max(gcoutw00[!(gcoutw00 %in% c(5, 7))], na.rm = TRUE)
+        max_val - gcoutw00
+      },
+      TRUE ~ NA_real_
+    ))
+  }
+  
+  # Recode cmdibna0, cmditra0, cmdirea0: negatives and 6 -> NA, subtract 1 from others
+  if ("cmdibna0" %in% names(d)) {
+    d <- d %>% mutate(ncmdibna0 = case_when(
+      cmdibna0 < 0 | cmdibna0 == 6 ~ NA_real_,
+      !is.na(cmdibna0) ~ cmdibna0 - 1,
+      TRUE ~ NA_real_
+    ))
+  }
+  
+  if ("cmditra0" %in% names(d)) {
+    d <- d %>% mutate(ncmditra0 = case_when(
+      cmditra0 < 0 | cmditra0 == 6 ~ NA_real_,
+      !is.na(cmditra0) ~ cmditra0 - 1,
+      TRUE ~ NA_real_
+    ))
+  }
+  
+  if ("cmdirea0" %in% names(d)) {
+    d <- d %>% mutate(ncmdirea0 = case_when(
+      cmdirea0 < 0 | cmdirea0 == 6 ~ NA_real_,
+      !is.na(cmdirea0) ~ cmdirea0 - 1,
+      TRUE ~ NA_real_
+    ))
+  }
+
+  # --- 5. Create Composite Variables ---
+  cat("Calculating composite variables...\n")
+  
+  # Parenting Age 11 composite (from nepdibn00, nepditr00, nepdire00)
+  parenting_age11_vars <- c("nepdibn00", "nepditr00", "nepdire00")
+  d$parenting_age11 <- row_mean(d, parenting_age11_vars)
+  
+  # Parenting Age 7 composite (from ndmdibna0, ndmditra0, ndmdirea0)
+  parenting_age7_vars <- c("ndmdibna0", "ndmditra0", "ndmdirea0")
+  d$parenting_age7 <- row_mean(d, parenting_age7_vars)
+  
+  # Parenting Age 5 composite (from ncmdibna0, ncmditra0, ncmdirea0)
+  parenting_age5_vars <- c("ncmdibna0", "ncmditra0", "ncmdirea0")
+  d$parenting_age5 <- row_mean(d, parenting_age5_vars)
+  
+  # Parental Monitoring Age 14 composite
+  parental_monitoring_age14_vars <- c("nfpwhet00", "nfpwhot00", "nfpwhat00", 
+                                       "nfcoutw00", "nfcotwi00", "nfcotwd00")
+  d$parental_monitoring_age14 <- row_mean(d, parental_monitoring_age14_vars)
+
+  # --- 6. Create Subindexes ---
   cat("Calculating subindexes...\n")
   
   # Define item lists for indexes
   monitoring_vars <- c("tv_rules_time", "tv_rules_hours", "no_tv_bedroom", "regular_bedtime",
                        "supervision_outdoor", "family_time_home", "evening_meal_parent_presence",
                        "internet_use_allowed")
-  appropriate_vars <- c("tell_off", "take_away_treats", "timeout")
+  appropriate_vars <- c("tell_off")
   harsh_vars <- c("smack_rev", "shout_rev", "bribe_rev", "ignore_rev")
   warmth_vars <- c("parent_child_closeness", "enjoy_listen_do", "express_affection",
                    "child_weekend_fun", "child_disclosure_home")
@@ -276,7 +471,7 @@ recode_parenting <- function(dat) {
   d$warmth_attachment_index       <- row_mean(d, warmth_vars)
   d$involvement_stimulation_index <- row_mean(d, involvement_vars)
 
-  # --- 5. Grand composite ---
+  # --- 7. Grand composite ---
   # Simple mean over all atomic recoded items
   all_new_vars <- setdiff(names(d), names(dat))
   atomic_vars <- all_new_vars[!str_detect(all_new_vars, "_index$")]
@@ -286,7 +481,7 @@ recode_parenting <- function(dat) {
     d$parenting_composite_mean <- row_mean(d, atomic_vars)
   }
 
-  # --- 6. Final summary and return ---
+  # --- 8. Final summary and return ---
   cat("Created", length(all_new_vars), "new parenting variables:\n")
   if (length(all_new_vars) > 0) {
     # Print only indexes for brevity
@@ -311,7 +506,6 @@ if (!exists("merged_data")) {
 # This single call replaces the two redundant calls from the original script.
 merged_data <- recode_parenting(merged_data)
 
-
 # ============================================================================
 # MEASUREMENT ANALYSIS
 # (All references to 'recoded_parenting_age7' are updated to 'merged_data')
@@ -323,8 +517,9 @@ cat("\n=== STARTING MEASUREMENT ANALYSIS ===\n")
 monitoring <- c("tv_rules_time", "tv_rules_hours", "regular_bedtime")
 psych::alpha(merged_data[, monitoring], check.keys = TRUE)
 
-appropriate <- c("tell_off", "take_away_treats", "timeout", "reason")
-psych::alpha(merged_data[, appropriate], check.keys = TRUE)
+appropriate <- c("tell_off")
+# Note: timeout, take_away_treats, and reason are now coded separately as age-specific parenting composites
+# psych::alpha(merged_data[, appropriate], check.keys = TRUE)
 
 harsh <- c("smack_rev", "shout_rev", "bribe_rev", "ignore_rev")
 psych::alpha(merged_data[, harsh], check.keys = TRUE)
@@ -358,7 +553,7 @@ cat("\n=== STARTING CFA ANALYSIS ===\n")
 cat("Checking data availability for CFA variables...\n")
 cfa_vars <- c("tv_rules_time", "tv_rules_hours", "no_tv_bedroom", "regular_bedtime",
               "supervision_outdoor", "family_time_home", "evening_meal_parent_presence",
-              "internet_use_allowed", "tell_off", "take_away_treats", "timeout",
+              "internet_use_allowed", "tell_off",
               "smack_rev", "shout_rev", "bribe_rev", "ignore_rev",
               "parent_child_closeness", "enjoy_listen_do", "express_affection",
               "child_weekend_fun", "child_disclosure_home", "reading_together",
@@ -423,7 +618,7 @@ if (length(usable_vars) >= 3) {
     "no_tv_bedroom" = "dmtvrma0", "regular_bedtime" = "dmberea0",
     "supervision_outdoor" = "dmploua0", "family_time_home" = "dmfrtv00",
     "evening_meal_parent_presence" = "dmevwoaa", "internet_use_allowed" = "dminlna0",
-    "tell_off" = "dmditea0", "take_away_treats" = "dmditra0", "timeout" = "dmdibna0",
+    "tell_off" = "dmditea0",
     "smack_rev" = "dmdisma0", "shout_rev" = "dmdisha0", "bribe_rev" = "dmdibra0",
     "ignore_rev" = "dmdiiga0", "parent_child_closeness" = "dmschca0",
     "enjoy_listen_do" = "dmenlia0", "express_affection" = "dmexafa0",

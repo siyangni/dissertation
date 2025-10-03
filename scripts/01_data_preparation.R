@@ -1,8 +1,6 @@
 # Load required library for reading Stata files
 library(pacman)
-p_load(haven)
-p_load(psych)
-p_load(dplyr)
+p_load(tidyverse, psych)
 
 # Set the data directory path
 data_path <- "/home/siyang/dissertation_folder/data"
