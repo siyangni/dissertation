@@ -1,6 +1,6 @@
 library(pacman)
 # Load all necessary packages. dplyr and stringr are part of tidyverse.
-p_load(tidyverse, psych, lavaan)
+p_load(tidyverse, psych, lavaan, haven)
 
 # --- Define Global Constants and Helper Functions ---
 
@@ -659,3 +659,19 @@ if (length(usable_vars) >= 3) {
 } else {
   cat("Insufficient variables for CFA analysis (need at least 3)\n")
 }
+
+# ============================================================================
+# EXPORT DATA TO CSV FORMAT
+# ============================================================================
+
+cat("\n=== EXPORTING DATA TO CSV FORMAT ===\n")
+
+# Define output path
+output_path <- "/home/siyang/dissertation_folder/dissertation/data/merged_data_with_parenting.csv"
+
+# Export to CSV format
+write_csv(merged_data, output_path, na = "")
+
+cat("Data successfully exported to:", output_path, "\n")
+cat("Total observations:", nrow(merged_data), "\n")
+cat("Total variables:", ncol(merged_data), "\n")
